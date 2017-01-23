@@ -28,6 +28,7 @@ BOOST_PYTHON_MODULE(pyrgbdcalib) {
         .def("record", &RemoteRecorder::record)
         .def("stop", &RemoteRecorder::stop)
         .def("is_paused", &RemoteRecorder::is_paused)
+        .def("play", &RemoteRecorder::play)
         .add_property("filename", &RemoteRecorder::get_filename, &RemoteRecorder::set_filename)
     ;
 }
