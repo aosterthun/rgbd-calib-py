@@ -8,7 +8,6 @@ ZMQINCPATH = /opt/zmq/current/include
 LIBS = -L$(PYLIBPATH) -lpthread -ldl  -lutil -lm  -lpython3.4m -L$(BOOSTLIBPATH) -lboost_python -L$(ZMQLIBPATH) -lzmq
 CXXFLAGS = -std=c++11 -Isrc -I$(PYINCPATH) -I$(BOOSTINCPATH) -I$(ZMQINCPATH) -O2
 
-
 SOURCES = $(wildcard src/*.cpp)
 OBJECTS = $(patsubst src/%.cpp, src/%.o, $(SOURCES))
 HEADERS = $(wildcard src/*.hpp)

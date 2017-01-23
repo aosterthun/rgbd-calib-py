@@ -23,6 +23,7 @@ namespace pykinecting{
       }
 
     void KinectService::play(const std::string filename) {
+
     }
 
     void KinectService::play_frames(const std::string filename, const int first_frame, const int last_frame) {
