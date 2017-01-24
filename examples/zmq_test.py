@@ -1,7 +1,6 @@
 import pykinecting
 
 import time
-recording = pykinecting.KinectService("127.0.0.1:7008")
+kinect_service = pykinecting.KinectService("127.0.0.1:7008")
 time.sleep(3)
-recording.record(0)
-recording.play("Test")
+kinect_service.play("1A","../../../recordings/steppo_standing/steppo_standing.stream")
