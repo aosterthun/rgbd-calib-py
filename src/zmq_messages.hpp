@@ -19,23 +19,23 @@ namespace pykinecting{
 	inline std::ostream& operator<<  (std::ostream& os, const Message_Type& obj){
 	}
 	
-	inline std::string play(Message_Type type,std::string& message_id, std::string& filepath_src){
+	inline std::string play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& user_id){
 	}
 
-	inline std::string play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe){
+	inline std::string play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& user_id){
 	}
 	
-	inline std::string play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop){
+	inline std::string play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop, std::string& user_id){
 	}
 
 
-	inline std::string record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed){
+	inline std::string record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed, std::string& user_id){
 	}
 	
-	inline std::string record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras){
+	inline std::string record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras, std::string& user_id){
 	}
 
-	inline std::string response(Message_Type type,std::string& message_id){
+	inline std::string response(Message_Type type,std::string& message_id, std::string& user_id, bool success){
 	}
 	
 	inline std::string expandToLength(size_t toExpand, int length){

@@ -25,21 +25,6 @@ RemoteRecorder::~RemoteRecorder(){
 void
 RemoteRecorder::re_init(){
 
-	std::string type = "0";
-	std::string id = "1B";
-	std::string path = "opt/test";
-	std::string path_dest = "opt/test/rec";
-	std::string startframe = "132";
-	std::string endframe = "982";
-	std::string num_cameras = "4";
-	std::string serverport = "127.0.0.1:7000";
-	std::string duration_in_secs = "420";
-	std::cout << pykinecting::play(pykinecting::Message_Type::PLAY, id, path) << std::endl;
-	std::cout << pykinecting::play(pykinecting::Message_Type::PLAY, id, path,startframe,endframe) << std::endl;
-	std::cout << pykinecting::play(pykinecting::Message_Type::PLAY, id, path,startframe,endframe,true) << std::endl;
-	std::cout << pykinecting::record(pykinecting::Message_Type::RECORD, id, path_dest, serverport, num_cameras, duration_in_secs,true) << std::endl;
-	std::cout << pykinecting::record_play(pykinecting::Message_Type::RECORD_PLAY, id, path,startframe,endframe,path_dest,num_cameras) << std::endl;
-
 	std::cout << "INFO: RemoteRecorder::re_init()" << std::endl;
 
 	m_ctx = new zmq::context_t(1); // means single threaded

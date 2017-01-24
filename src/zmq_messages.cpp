@@ -21,7 +21,7 @@
 
 namespace pykinecting{
     
-	enum Message_Type {PLAY, PLAY_FRAMES, PLAY_FRAMES_LOOP, RECORD, SUCCESS, ERROR, RECORD_PLAY};
+	enum Message_Type {PLAY, PLAY_FRAMES, PLAY_FRAMES_LOOP, RECORD, RECORD_PLAY, RESPONSE};
 	
 	std::string toString(const Message_Type& type){
 		switch (type) {
@@ -40,11 +40,8 @@ namespace pykinecting{
 			case RECORD_PLAY:
 				return "4";
 				break;
-			case SUCCESS:
+			case RESPONSE:
 				return "5";
-				break;
-			case ERROR:
-				return "6"; //Error can't be 'E' because default is already 'E'. DUH.
 				break;
 			default:
 				return "E";
@@ -65,23 +62,25 @@ namespace pykinecting{
 	}
 	
 	
-	zmq::message_t play(Message_Type type,std::string& message_id, std::string& filepath_src){
+	zmq::message_t play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string user_id){
 		zmq::message_t zmq_msg(260);
 		std::string msg;
 		filepath_src.append(255 - filepath_src.length(), '_');
 		message_id.append(3 - message_id.length(), '_');
 		std::string exType = pykinecting::toString(type);
 		exType.append(2 - exType.length(), '_');
+		user_id.append(4 - user_id.length(), '_');
 		msg.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
+		msg.append(user_id);
 		//std::cout << msg.c_str() << std::endl;
 		memcpy(zmq_msg.data(),msg.c_str(),260);
 		//std::cout << zmq_msg.size() << std::endl;
 		return zmq_msg;
 	}
 	
-	zmq::message_t play_frames(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe){
+	zmq::message_t play_frames(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string user_id){
 		zmq::message_t zmq_msg(270);
 		std::string msg;
 		std::string exType = pykinecting::toString(type);
@@ -90,16 +89,19 @@ namespace pykinecting{
 		message_id.append(3 - message_id.length(), '_');
 		startframe.append(5 - startframe.length(), '_');
 		endframe.append(5 - endframe.length(), '_');
+		user_id.append(4 - user_id.length(), '_');
 		msg.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(startframe);
 		msg.append(endframe);
+		msg.append(user_id);
+
 		memcpy(zmq_msg.data(),&msg,270);
 		return zmq_msg;
 	}
 	
-	zmq::message_t play_frames_loop(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop){
+	zmq::message_t play_frames_loop(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop, std::string user_id){
 		zmq::message_t zmq_msg(271);
 		std::string msg;
 		std::string exType = pykinecting::toString(type);
@@ -108,19 +110,21 @@ namespace pykinecting{
 		message_id.append(3 - message_id.length(), '_');
 		startframe.append(5 - startframe.length(), '_');
 		endframe.append(5 - endframe.length(), '_');
+		user_id.append(4 - user_id.length(), '_');
 		msg.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(startframe);
 		msg.append(endframe);
 		msg.append(BOOL_STR(loop));
-		
+		msg.append(user_id);
+
 		memcpy(zmq_msg.data(),&msg,271);
 		return zmq_msg;
 	}
 	
 	
-	zmq::message_t record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed){
+	zmq::message_t record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed, std::string user_id){
 		zmq::message_t zmq_msg(282);
 		std::string msg;
 		filepath_dest.append(255 - filepath_dest.length(), '_');
@@ -129,6 +133,7 @@ namespace pykinecting{
 		exType.append(2 - exType.length(), '_');
 		serverport.append(17 - serverport.length(), '_');
 		duration_in_secs.append(3 - duration_in_secs.length(), '_');
+		user_id.append(4 - user_id.length(), '_');
 		msg.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_dest);
@@ -136,12 +141,13 @@ namespace pykinecting{
 		msg.append(num_cameras);
 		msg.append(duration_in_secs);
 		msg.append(BOOL_STR(is_compressed));
+		msg.append(user_id);
 		
 		memcpy(zmq_msg.data(),&msg,282);
 		return zmq_msg;
 	}
 	
-	zmq::message_t record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras){
+	zmq::message_t record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras, std::string user_id){
 		zmq::message_t zmq_msg(521);
 		std::string msg;
 		std::string exType = pykinecting::toString(type);
@@ -151,6 +157,7 @@ namespace pykinecting{
 		message_id.append(3 - message_id.length(), '_');
 		startframe.append(5 - startframe.length(), '_');
 		endframe.append(5 - endframe.length(), '_');
+		user_id.append(4 - user_id.length(), '_');
 		msg.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
@@ -158,19 +165,23 @@ namespace pykinecting{
 		msg.append(endframe);
 		msg.append(filepath_dest);
 		msg.append(num_cameras);
+		msg.append(user_id);
 		
 		memcpy(zmq_msg.data(),&msg,521);
 		return zmq_msg;
 	}
 	
-	zmq::message_t response(Message_Type type,std::string& message_id){
+	zmq::message_t response(Message_Type type,std::string& message_id, std::string user_id, bool success){
 		zmq::message_t zmq_msg(6);
 		std::string msg;
 		message_id.append(3 - message_id.length(), '_');
 		std::string exType = pykinecting::toString(type);
 		exType.append(2 - exType.length(), '_');
+		user_id.append(4 - user_id.length(), '_');
 		msg.append(exType);
 		msg.append(message_id);
+		msg.append(user_id);
+		msg.append(BOOL_STR(success));
 		memcpy(zmq_msg.data(),&msg,6);
 		return zmq_msg;
 	}
@@ -183,24 +194,25 @@ namespace pykinecting{
 		
 		switch (type) {
 			case PLAY:
-				memcpy(&responseArray, response.data(), 260);
-				responseString = responseArray;
-				
+				memcpy(&responseArray, response.data(), 264);
+				responseString = responseArray;	
 				resolvedResponse.push_back(responseString.substr(0,2));
 				resolvedResponse.push_back(responseString.substr(2,3));
 				resolvedResponse.push_back(responseString.substr(5,255));
+				resolvedResponse.push_back(responseString.substr(260,4));
 				break;
 			case PLAY_FRAMES:
-				memcpy(&responseArray, &response, 270);
+				memcpy(&responseArray, &response, 274);
 				responseString = responseArray;
 				resolvedResponse.push_back(responseString.substr(0,2));
 				resolvedResponse.push_back(responseString.substr(2,3));
 				resolvedResponse.push_back(responseString.substr(5,255));
 				resolvedResponse.push_back(responseString.substr(260,5));
 				resolvedResponse.push_back(responseString.substr(265,5));
+				resolvedResponse.push_back(responseString.substr(270,4));
 				break;
 			case PLAY_FRAMES_LOOP:
-				memcpy(&responseArray, &response, 271);
+				memcpy(&responseArray, &response, 275);
 				responseString = responseArray;
 				resolvedResponse.push_back(responseString.substr(0,2));
 				resolvedResponse.push_back(responseString.substr(2,3));
@@ -208,9 +220,10 @@ namespace pykinecting{
 				resolvedResponse.push_back(responseString.substr(260,5));
 				resolvedResponse.push_back(responseString.substr(265,5));
 				resolvedResponse.push_back(responseString.substr(270,1));
+				resolvedResponse.push_back(responseString.substr(271,4));
 				break;
 			case RECORD:
-				memcpy(&responseArray, &response, 282);
+				memcpy(&responseArray, &response, 286);
 				responseString = responseArray;
 				resolvedResponse.push_back(responseString.substr(0,2));
 				resolvedResponse.push_back(responseString.substr(2,3));
@@ -219,9 +232,10 @@ namespace pykinecting{
 				resolvedResponse.push_back(responseString.substr(277,1));
 				resolvedResponse.push_back(responseString.substr(278,3));
 				resolvedResponse.push_back(responseString.substr(281,1));
+				resolvedResponse.push_back(responseString.substr(282,4));
 				break;
 			case RECORD_PLAY:
-				memcpy(&responseArray, &response, 521);
+				memcpy(&responseArray, &response, 530);
 				responseString = responseArray;
 				resolvedResponse.push_back(responseString.substr(0,2));
 				resolvedResponse.push_back(responseString.substr(2,3));
@@ -230,23 +244,32 @@ namespace pykinecting{
 				resolvedResponse.push_back(responseString.substr(265,5));
 				resolvedResponse.push_back(responseString.substr(270,255));
 				resolvedResponse.push_back(responseString.substr(525,1));
+				resolvedResponse.push_back(responseString.substr(526,4));
+				break;
+			case RESPONSE:
+				memcpy(&responseArray, &response, 10);
+				responseString = responseArray;
+				resolvedResponse.push_back(responseString.substr(0,2));
+				resolvedResponse.push_back(responseString.substr(2,3));
+				resolvedResponse.push_back(responseString.substr(5,4));
+				resolvedResponse.push_back(responseString.substr(9,1));
 				break;
 			default:
 				break;
 		}
 		
-		std::vector<std::string> nichttest;
-		
+		std::vector<std::string> dickbutt;
+
 		for (auto i : resolvedResponse) {
 			//std::cout << i << std::endl;
 			i.erase(std::remove(i.begin(),i.end(),'_'), i.end());
-			nichttest.push_back(i);
+			dickbutt.push_back(i);
 			//std::cout << i << std::endl;
 		}
-		for (auto i : nichttest) {
+		for (auto i : dickbutt) {
 			std::cout << i << std::endl;
 		}
-		return nichttest;
+		return dickbutt;
 	}
 }
 
