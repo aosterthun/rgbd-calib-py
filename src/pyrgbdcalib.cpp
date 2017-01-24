@@ -1,8 +1,7 @@
 /*
  * This inclusion should be put at the beginning.  It will include <Python.h>.
  */
-#ifndef pyrgbdcalib_hpp
-#define pyrgbdcalib_hpp
+
 #include <RemoteRecorder.hpp>
 #include <boost/python.hpp>
 #include <cstdint>
@@ -32,4 +31,4 @@ BOOST_PYTHON_MODULE(pyrgbdcalib) {
     ;
 }
 
-#endif
+

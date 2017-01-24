@@ -108,6 +108,7 @@ namespace pykinecting{
 		msg.append(message_id);
 		msg.append(filepath_dest);
 		msg.append(serverport);
+		msg.append(num_cameras);
 		msg.append(duration_in_secs);
 		msg.append(BOOL_STR(is_compressed));
 		return msg;
