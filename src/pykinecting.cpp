@@ -3,8 +3,8 @@
  */
 
 // #include <RemoteRecorder.hpp>
-#include <KinectService.hpp>
 
+#include <KinectService.hpp>
 #include <boost/python.hpp>
 #include <cstdint>
 #include <string>

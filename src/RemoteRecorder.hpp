@@ -1,40 +1,44 @@
+#ifndef RemoteRecorder_hpp
+#define RemoteRecorder_hpp
+
 #include <string>
+#include <zmq_messages.hpp>
 
 namespace zmq{
-  class context_t;
-  class socket_t;
+	class context_t;
+	class socket_t;
 }
 
 namespace pyrgbdcalib{
 
-  class RemoteRecorder{
+	class RemoteRecorder{
 
-  public:
+	public:
 
-    RemoteRecorder(const std::string& socket, const std::string& filename);
-    ~RemoteRecorder();
+		RemoteRecorder(const std::string& socket, const std::string& filename);
+		~RemoteRecorder();
 
-    std::string get_filename() const;
+		std::string get_filename() const;
 
-    void set_filename(std::string const & in_filename);
+		void set_filename(std::string const & in_filename);
 
-    bool play(std::string const& stream_path);
+		bool play(std::string const& stream_path);
 
-    bool record(const unsigned num_seconds);
+		bool record(const unsigned num_seconds);
 
-    bool stop();
+		bool stop();
 
-    bool is_paused();
+		bool is_paused();
 
-  private:
+	private:
 
-    std::string m_socket;
-    std::string m_filename;
-    zmq::context_t* m_ctx;
-    zmq::socket_t*  m_skt;
-    void re_init();
+		std::string m_socket;
+		std::string m_filename;
+		zmq::context_t* m_ctx;
+		zmq::socket_t*  m_skt;
+		void re_init();
 
-  };
-
-
+	};
 }
+
+#endif
