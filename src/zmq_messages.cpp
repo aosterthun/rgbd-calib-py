@@ -2,6 +2,8 @@
 #define zmq_messages_hpp
 
 #include <iostream>
+#include <zmq.hpp>
+#include <vector>
 #include <cstring>
 #include <algorithm>
 #include <string>
