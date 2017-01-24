@@ -2,7 +2,6 @@
 #define RemoteRecorder_hpp
 
 #include <string>
-#include <zmq_messages.hpp>
 
 namespace zmq{
 	class context_t;

@@ -1,58 +1,35 @@
-#include  <unistd.h>
+#include <unistd.h>
 #include <iostream>
 #include "KinectService.hpp"
-
-#include <zmq.hpp>
 
 namespace pykinecting{
 
 	KinectService::KinectService(const std::string socket)
-	: m_socket(socket),
-	m_ctx(0),
-	m_skt(0)
-	{
-		std::cout << "INFO:: KinectService constructor" << std::endl;
+		: ks_socket(socket),
+		ks_pub_ctx(0),
+		ks_pub_skt(0),
+		ks_sub_ctx(0),
+		ks_sub_skt(0)
+      {
+		  std::cout << "INFO:: KinectService constructor" << std::endl;
+		  ks_pub_ctx = new zmq::context_t(1); // means single threaded
+		  ks_pub_skt = new zmq::socket_t(*ks_pub_ctx, ZMQ_PUB); // means a publisher
+		  ks_sub_ctx = new zmq::context_t(1); // means single threaded
+		  ks_sub_skt = new zmq::socket_t(*ks_pub_ctx, ZMQ_SUB); // means a sublisher
+		  uint32_t hwm = 1;
+		  ks_pub_skt->setsockopt(ZMQ_SNDHWM,&hwm, sizeof(hwm));
+		  ks_sub_skt->setsockopt(ZMQ_SNDHWM,&hwm, sizeof(hwm));
+		  std::string endpoint("tcp://" + ks_socket);
+		  ks_pub_skt->bind(endpoint.c_str());
+		  ks_sub_skt->connect(endpoint.c_str());
+		  sleep(1);
+      }
 
-		m_ctx = new zmq::context_t(1); // means single threaded
-		m_skt = new zmq::socket_t(*m_ctx, ZMQ_PUB); // means a publisher
-		uint32_t hwm = 1;
-		m_skt->setsockopt(ZMQ_SNDHWM,&hwm, sizeof(hwm));
-		std::string endpoint("tcp://" + m_socket);
-		m_skt->bind(endpoint.c_str());
-		sleep(1);
-	}
-
-	void KinectService::play(const std::string filename) {
-
-	}
-
-	void KinectService::play_frames(const std::string filename, const int first_frame, const int last_frame) {
-	}
-
-	void KinectService::record(const std::string output_file, /*const std::string socket, */const int num_cameras,
-		const float duration, const bool rgb_is_compressed/* = false*/) {
-	}
-
-	void KinectService::play_record_in_sync(const std::string filename, const int first_frame, const int last_frame,
-				const std::string output_file, const int num_cameras) {
-	}
-
-	void KinectService::pause() {
-	}
-
-	bool KinectService::is_paused() const {
-		return m_paused;
-	}
-
-	bool KinectService::set_paused(bool val) {
-		m_paused = val;
-	}
-
-	std::string KinectService::get_socket() const {
-		return m_socket;
-	}
-
-	std::string KinectService::set_socket(const std::string socket) {
-		m_socket = socket;
-	}
+    void KinectService::play(std::string& user_id, std::string& filename) {
+		std::string message_id = std::to_string(ks_message_count);
+		ks_pub_skt->send(pykinecting::play(Message_Type::PLAY, message_id, filename, user_id));
+		zmq::message_t response(10);
+		ks_sub_skt->recv(&response);
+		pykinecting::resolveResponse(Message_Type::RESPONSE, &response);
+    }
 }

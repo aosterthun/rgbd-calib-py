@@ -31,7 +31,7 @@ BOOST_PYTHON_MODULE(pykinecting) {
     //     .add_property("filename", &RemoteRecorder::get_filename, &RemoteRecorder::set_filename)
     // ;
 
-    class_<KinectService>("KinectService",
+  /*  class_<KinectService>("KinectService",
         init<const std::string>())
         .def("play", &KinectService::play)
         .def("play_frames", &KinectService::play_frames)
@@ -40,6 +40,6 @@ BOOST_PYTHON_MODULE(pykinecting) {
         .def("pause", &KinectService::pause)
         .add_property("socket", &KinectService::get_socket, &KinectService::set_socket)
         .add_property("paused", &KinectService::is_paused, &KinectService::set_paused);
-}
+*/}
 
 
