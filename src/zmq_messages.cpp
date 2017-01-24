@@ -12,24 +12,30 @@
 
 namespace pykinecting{
 	
-	enum Message_Type {PLAY, RECORD, SUCCESS, ERROR, RECORD_PLAY};
+	enum Message_Type {PLAY, PLAY_FRAMES, PLAY_FRAMES_LOOP, RECORD, SUCCESS, ERROR, RECORD_PLAY};
 	
 	std::string toString(const Message_Type& type){
 		switch (type) {
 			case PLAY:
 				return "0";
 				break;
-			case RECORD:
+			case PLAY_FRAMES:
 				return "1";
 				break;
-			case SUCCESS:
+			case PLAY_FRAMES_LOOP:
 				return "2";
 				break;
-			case ERROR:
-				return "3"; //Error can't be 'E' because default is already 'E'. DUH.
+			case RECORD:
+				return "3";
 				break;
 			case RECORD_PLAY:
 				return "4";
+				break;
+			case SUCCESS:
+				return "5";
+				break;
+			case ERROR:
+				return "6"; //Error can't be 'E' because default is already 'E'. DUH.
 				break;
 			default:
 				return "E";
@@ -60,7 +66,7 @@ namespace pykinecting{
 		msg.append(filepath_src);
 		return msg;
 	}
-
+	
 	std::string play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe){
 		std::string msg;
 		std::string exType = pykinecting::toString(type);
@@ -94,8 +100,8 @@ namespace pykinecting{
 		
 		return msg;
 	}
-
-
+	
+	
 	std::string record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed){
 		std::string msg;
 		filepath_dest.append(255 - filepath_dest.length(), '_');
@@ -108,6 +114,7 @@ namespace pykinecting{
 		msg.append(message_id);
 		msg.append(filepath_dest);
 		msg.append(serverport);
+		msg.append(num_cameras);
 		msg.append(duration_in_secs);
 		msg.append(BOOL_STR(is_compressed));
 		return msg;
@@ -132,7 +139,7 @@ namespace pykinecting{
 		
 		return msg;
 	}
-
+	
 	std::string response(Message_Type type,std::string& message_id){
 		std::string msg;
 		message_id.append(3 - message_id.length(), '_');
@@ -143,10 +150,53 @@ namespace pykinecting{
 		return msg;
 	}
 	
-	std::string expandToLength(size_t toExpand, int length){
-		std::string tmp_str = std::to_string(toExpand);
-		tmp_str.append(length - tmp_str.length(), '\t');
-		return tmp_str;
+	std::vector<std::string> resolveResponse(Message_Type type, std::string& response){
+		std::vector<std::string> resolvedResponse;
+		
+		switch (type) {
+			case PLAY:
+				resolvedResponse.push_back(response.substr(0,2));
+				resolvedResponse.push_back(response.substr(2,3));
+				resolvedResponse.push_back(response.substr(4,255));
+				break;
+			case PLAY_FRAMES:
+				resolvedResponse.push_back(response.substr(0,2));
+				resolvedResponse.push_back(response.substr(2,3));
+				resolvedResponse.push_back(response.substr(5,255));
+				resolvedResponse.push_back(response.substr(260,5));
+				resolvedResponse.push_back(response.substr(265,5));
+				break;
+			case PLAY_FRAMES_LOOP:
+				resolvedResponse.push_back(response.substr(0,2));
+				resolvedResponse.push_back(response.substr(2,3));
+				resolvedResponse.push_back(response.substr(5,255));
+				resolvedResponse.push_back(response.substr(260,5));
+				resolvedResponse.push_back(response.substr(265,5));
+				resolvedResponse.push_back(response.substr(270,1));
+				break;
+			case RECORD:
+				resolvedResponse.push_back(response.substr(0,2));
+				resolvedResponse.push_back(response.substr(2,3));
+				resolvedResponse.push_back(response.substr(5,255));
+				resolvedResponse.push_back(response.substr(260,17));
+				resolvedResponse.push_back(response.substr(277,1));
+				resolvedResponse.push_back(response.substr(278,3));
+				resolvedResponse.push_back(response.substr(281,1));
+				break;
+			case RECORD_PLAY:
+				
+				break;
+			default:
+				break;
+		}
+		
+		for (auto i : resolvedResponse) {
+			std::cout << i << std::endl;
+			i.erase(std::remove(i.begin(),i.end(),'_'), i.end());
+			//std::cout << i << std::endl;
+		}
+		
+		return resolvedResponse;
 	}
 }
 
