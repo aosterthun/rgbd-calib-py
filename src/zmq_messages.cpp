@@ -184,7 +184,13 @@ namespace pykinecting{
 				resolvedResponse.push_back(response.substr(281,1));
 				break;
 			case RECORD_PLAY:
-				
+				resolvedResponse.push_back(response.substr(0,2));
+				resolvedResponse.push_back(response.substr(2,3));
+				resolvedResponse.push_back(response.substr(5,255));
+				resolvedResponse.push_back(response.substr(260,5));
+				resolvedResponse.push_back(response.substr(265,5));
+				resolvedResponse.push_back(response.substr(270,255));
+				resolvedResponse.push_back(response.substr(525,1));
 				break;
 			default:
 				break;
