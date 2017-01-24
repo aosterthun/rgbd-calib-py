@@ -67,6 +67,18 @@ namespace pykinecting{
 		return msg;
 	}
 	
+	zmq_message_t play(Message_Type type,std::string& message_id, std::string& filepath_src){
+		std::string msg;
+		filepath_src.append(255 - filepath_src.length(), '_');
+		message_id.append(3 - message_id.length(), '_');
+		std::string exType = pykinecting::toString(type);
+		exType.append(2 - exType.length(), '_');
+		msg.append(exType);
+		msg.append(message_id);
+		msg.append(filepath_src);
+		return msg;
+	}
+
 	std::string play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe){
 		std::string msg;
 		std::string exType = pykinecting::toString(type);
