@@ -80,7 +80,7 @@ namespace pykinecting{
 		msg2.append("\0");
 		//std::cout << msg.c_str() << std::endl;
 		memcpy(zmq_msg.data(),msg.c_str(),529);
-		memcpy(zmq_msg2.data(),msg.c_str(),3);
+		memcpy(zmq_msg2.data(),msg2.c_str(),3);
 
 		messages.push_back(std::move(zmq_msg2));
 		messages.push_back(std::move(zmq_msg));
@@ -116,7 +116,7 @@ namespace pykinecting{
 		msg2.append("\0");
 
 		memcpy(zmq_msg.data(),msg.c_str(),529);
-		memcpy(zmq_msg2.data(),msg.c_str(),3);
+		memcpy(zmq_msg2.data(),msg2.c_str(),3);
 
 		messages.push_back(std::move(zmq_msg2));
 		messages.push_back(std::move(zmq_msg));
@@ -204,7 +204,7 @@ namespace pykinecting{
 		msg2.append("\0");
 
 		memcpy(zmq_msg.data(),msg.c_str(),529);
-		memcpy(zmq_msg2.data(),msg.c_str(),3);
+		memcpy(zmq_msg2.data(),msg2.c_str(),3);
 
 		messages.push_back(std::move(zmq_msg2));
 		messages.push_back(std::move(zmq_msg));
