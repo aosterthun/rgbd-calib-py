@@ -31,8 +31,10 @@ namespace pykinecting{
         std::cout << message_id << std::endl;
         std::cout << ks_message_count << std::endl;
 
-		auto i = pykinecting::play(Message_Type::PLAY, message_id, filename, user_id);
-		ks_pub_skt->send(i);
+		std::vector<zmq::message_t> i = pykinecting::play(Message_Type::PLAY, message_id, filename, user_id);
+		ks_pub_skt->send(i[0], ZMQ_SNDMORE);
+		ks_pub_skt->send(i[1], 0);
+
         // zmq::message_t response(10);
 		// ks_sub_skt->recv(&response);
 		// std::vector<std::string> responseResolved = pykinecting::resolveResponse(Message_Type::RESPONSE, &response);

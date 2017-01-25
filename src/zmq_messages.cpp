@@ -58,52 +58,80 @@ namespace pykinecting{
 	}
 	
 	
-	inline zmq::message_t play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& user_id){
-		zmq::message_t zmq_msg(531);
+	inline std::vector<zmq::message_t> play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& user_id){
+		zmq::message_t zmq_msg(529);
+		zmq::message_t zmq_msg2(1);
 		std::string msg;
+		std::string msg2;
+		std::vector<zmq::message_t> messages;
+		
 		filepath_src.append(255 - filepath_src.length(), '_');
 		message_id.append(3 - message_id.length(), '_');
 		std::string exType = pykinecting::toString(type);
-		exType.append(2 - exType.length(), '_');
+		//exType.append(2 - exType.length(), '_');
 		user_id.append(4 - user_id.length(), '_');
-		msg.append(exType);
+		
+		msg2.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
-		msg.append("12");
-		msg.append(530 - 264, '_');
+		msg.append(user_id);
+		msg.append(529 - 264, '_');
 		msg.append("\0");
-		std::cout << msg.c_str() << std::endl;
-		memcpy(zmq_msg.data(),msg.c_str(),531);
+		msg2.append("\0");
+		//std::cout << msg.c_str() << std::endl;
+		memcpy(zmq_msg.data(),msg.c_str(),529);
+		memcpy(zmq_msg2.data(),msg.c_str(),1);
+
+		messages.push_back(std::move(zmq_msg2));
+		messages.push_back(std::move(zmq_msg));
+
 		//std::cout << zmq_msg.size() << std::endl;
-		return zmq_msg;
+		return messages;
 	}
 	
-	inline zmq::message_t play_frames(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop, std::string& user_id){
-		zmq::message_t zmq_msg(530);
+	inline std::vector<zmq::message_t> play_frames(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop, std::string& user_id){
+		zmq::message_t zmq_msg(529);
+		zmq::message_t zmq_msg2(3);
 		std::string msg;
-		std::string exType = pykinecting::toString(type);
+		std::string msg2;
+		std::vector<zmq::message_t> messages;
+	
+		std::string exType = pykinecting::toString(type);		
 		exType.append(2 - exType.length(), '_');
 		filepath_src.append(255 - filepath_src.length(), '_');
 		message_id.append(3 - message_id.length(), '_');
 		startframe.append(5 - startframe.length(), '_');
 		endframe.append(5 - endframe.length(), '_');
 		user_id.append(4 - user_id.length(), '_');
-		msg.append(exType);
+		
+		msg2.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(startframe);
 		msg.append(endframe);
 		msg.append(BOOL_STR(loop));
 		msg.append(user_id);
-		msg.append(530 - 275, '_');
-		memcpy(zmq_msg.data(),&msg,530);
-		return zmq_msg;
+		msg.append(529 - 275, '_');
+		msg.append("\0");
+		msg2.append("\0");
+
+		memcpy(zmq_msg.data(),msg.c_str(),529);
+		memcpy(zmq_msg2.data(),msg.c_str(),3);
+
+		messages.push_back(std::move(zmq_msg2));
+		messages.push_back(std::move(zmq_msg));
+
+		return messages;
 	}
 	
 	
-	inline zmq::message_t record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed, std::string& user_id){
-		zmq::message_t zmq_msg(530);
+	inline std::vector<zmq::message_t> record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed, std::string& user_id){
+		zmq::message_t zmq_msg(529);
+		zmq::message_t zmq_msg2(3);
 		std::string msg;
+		std::string msg2;
+		std::vector<zmq::message_t> messages;
+
 		filepath_dest.append(255 - filepath_dest.length(), '_');
 		message_id.append(3 - message_id.length(), '_');
 		std::string exType = pykinecting::toString(type);
@@ -111,7 +139,8 @@ namespace pykinecting{
 		serverport.append(17 - serverport.length(), '_');
 		duration_in_secs.append(3 - duration_in_secs.length(), '_');
 		user_id.append(4 - user_id.length(), '_');
-		msg.append(exType);
+
+		msg2.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_dest);
 		msg.append(serverport);
@@ -119,14 +148,26 @@ namespace pykinecting{
 		msg.append(duration_in_secs);
 		msg.append(BOOL_STR(is_compressed));
 		msg.append(user_id);
-		msg.append(530 - 286, '_');
-		memcpy(zmq_msg.data(),&msg,530);
-		return zmq_msg;
+		msg.append(529 - 286, '_');
+		msg.append("\0");
+		msg2.append("\0");
+
+		memcpy(zmq_msg.data(),msg.c_str(),529);
+		memcpy(zmq_msg2.data(),msg.c_str(),3);
+
+		messages.push_back(std::move(zmq_msg2));
+		messages.push_back(std::move(zmq_msg));
+
+		return messages;
 	}
 	
-	inline zmq::message_t record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras, std::string& user_id){
-		zmq::message_t zmq_msg(530);
+	inline std::vector<zmq::message_t> record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras, std::string& user_id){
+		zmq::message_t zmq_msg(529);
+		zmq::message_t zmq_msg2(3);
 		std::string msg;
+		std::string msg2;
+		std::vector<zmq::message_t> messages;
+
 		std::string exType = pykinecting::toString(type);
 		exType.append(2 - exType.length(), '_');
 		filepath_src.append(255 - filepath_src.length(), '_');
@@ -135,7 +176,8 @@ namespace pykinecting{
 		startframe.append(5 - startframe.length(), '_');
 		endframe.append(5 - endframe.length(), '_');
 		user_id.append(4 - user_id.length(), '_');
-		msg.append(exType);
+
+		msg2.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(startframe);
@@ -143,9 +185,17 @@ namespace pykinecting{
 		msg.append(filepath_dest);
 		msg.append(num_cameras);
 		msg.append(user_id);
+		msg.append(2, '_');
+		msg.append("\0");
+		msg2.append("\0");
 		
-		memcpy(zmq_msg.data(),&msg,530);
-		return zmq_msg;
+		memcpy(zmq_msg.data(),msg.c_str(),529);
+		memcpy(zmq_msg2.data(),msg.c_str(),3);
+
+		messages.push_back(std::move(zmq_msg2));
+		messages.push_back(std::move(zmq_msg));
+
+		return messages;
 	}
 	
 	inline zmq::message_t response(Message_Type type,std::string& message_id, std::string& user_id, bool success){
@@ -174,48 +224,46 @@ namespace pykinecting{
 			case PLAY:
 				memcpy(&responseArray, response->data(), 530);
 				responseString = responseArray;	
-				resolvedResponse.push_back(responseString.substr(0,2));
-				resolvedResponse.push_back(responseString.substr(2,3));
-				resolvedResponse.push_back(responseString.substr(5,255));
-				resolvedResponse.push_back(responseString.substr(260,4));
-				resolvedResponse.push_back(responseString.substr(264,530-264));
+				resolvedResponse.push_back(responseString.substr(0,3));
+				resolvedResponse.push_back(responseString.substr(3,255));
+				resolvedResponse.push_back(responseString.substr(258,4));
+				resolvedResponse.push_back(responseString.substr(262,530-262));
 				break;
 			case PLAY_FRAMES:
 				memcpy(&responseArray, response->data(), 530);
 				responseString = responseArray;
-				resolvedResponse.push_back(responseString.substr(0,2));
-				resolvedResponse.push_back(responseString.substr(2,3));
-				resolvedResponse.push_back(responseString.substr(5,255));
-				resolvedResponse.push_back(responseString.substr(260,5));
-				resolvedResponse.push_back(responseString.substr(265,5));
-				resolvedResponse.push_back(responseString.substr(270,1));
-				resolvedResponse.push_back(responseString.substr(271,4));
-				resolvedResponse.push_back(responseString.substr(275,530-275));
+				resolvedResponse.push_back(responseString.substr(0,3));
+				resolvedResponse.push_back(responseString.substr(3,255));
+				resolvedResponse.push_back(responseString.substr(258,5));
+				resolvedResponse.push_back(responseString.substr(263,5));
+				resolvedResponse.push_back(responseString.substr(268,1));
+				resolvedResponse.push_back(responseString.substr(269,4));
+				resolvedResponse.push_back(responseString.substr(273,530-273));
 				break;
 			case RECORD:
 				memcpy(&responseArray, response->data(), 530);
 				responseString = responseArray;
-				resolvedResponse.push_back(responseString.substr(0,2));
-				resolvedResponse.push_back(responseString.substr(2,3));
-				resolvedResponse.push_back(responseString.substr(5,255));
-				resolvedResponse.push_back(responseString.substr(260,17));
-				resolvedResponse.push_back(responseString.substr(277,1));
-				resolvedResponse.push_back(responseString.substr(278,3));
-				resolvedResponse.push_back(responseString.substr(281,1));
-				resolvedResponse.push_back(responseString.substr(282,4));
-				resolvedResponse.push_back(responseString.substr(286,530-286));
+				resolvedResponse.push_back(responseString.substr(0,3));
+				resolvedResponse.push_back(responseString.substr(3,255));
+				resolvedResponse.push_back(responseString.substr(258,17));
+				resolvedResponse.push_back(responseString.substr(275,1));
+				resolvedResponse.push_back(responseString.substr(276,3));
+				resolvedResponse.push_back(responseString.substr(279,1));
+				resolvedResponse.push_back(responseString.substr(280,4));
+				resolvedResponse.push_back(responseString.substr(284,530-284));
 				break;
 			case RECORD_PLAY:
 				memcpy(&responseArray, response->data(), 530);
 				responseString = responseArray;
-				resolvedResponse.push_back(responseString.substr(0,2));
-				resolvedResponse.push_back(responseString.substr(2,3));
-				resolvedResponse.push_back(responseString.substr(5,255));
-				resolvedResponse.push_back(responseString.substr(260,5));
-				resolvedResponse.push_back(responseString.substr(265,5));
-				resolvedResponse.push_back(responseString.substr(270,255));
-				resolvedResponse.push_back(responseString.substr(525,1));
-				resolvedResponse.push_back(responseString.substr(526,4));
+				resolvedResponse.push_back(responseString.substr(0,3));
+				resolvedResponse.push_back(responseString.substr(3,255));
+				resolvedResponse.push_back(responseString.substr(258,5));
+				resolvedResponse.push_back(responseString.substr(263,5));
+				resolvedResponse.push_back(responseString.substr(268,255));
+				resolvedResponse.push_back(responseString.substr(523,1));
+				resolvedResponse.push_back(responseString.substr(524,4));
+				resolvedResponse.push_back(responseString.substr(528,2));
+
 				break;
 			case RESPONSE:
 				memcpy(&responseArray, response->data(), 530);
