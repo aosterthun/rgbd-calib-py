@@ -60,27 +60,27 @@ namespace pykinecting{
 	
 	inline std::vector<zmq::message_t> play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& user_id){
 		zmq::message_t zmq_msg(529);
-		zmq::message_t zmq_msg2(1);
+		zmq::message_t zmq_msg2(3);
 		std::string msg;
 		std::string msg2;
 		std::vector<zmq::message_t> messages;
 		
-		filepath_src.append(255 - filepath_src.length(), '_');
-		message_id.append(3 - message_id.length(), '_');
+		filepath_src.append(255 - filepath_src.length(), '\t');
+		message_id.append(3 - message_id.length(), '\t');
 		std::string exType = pykinecting::toString(type);
-		//exType.append(2 - exType.length(), '_');
-		user_id.append(4 - user_id.length(), '_');
+		//exType.append(2 - exType.length(), '\t');
+		user_id.append(4 - user_id.length(), '\t');
 		
 		msg2.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(user_id);
-		msg.append(529 - 264, '_');
+		msg.append(529 - 264, '\t');
 		msg.append("\0");
 		msg2.append("\0");
 		//std::cout << msg.c_str() << std::endl;
 		memcpy(zmq_msg.data(),msg.c_str(),529);
-		memcpy(zmq_msg2.data(),msg.c_str(),1);
+		memcpy(zmq_msg2.data(),msg.c_str(),3);
 
 		messages.push_back(std::move(zmq_msg2));
 		messages.push_back(std::move(zmq_msg));
@@ -97,12 +97,12 @@ namespace pykinecting{
 		std::vector<zmq::message_t> messages;
 	
 		std::string exType = pykinecting::toString(type);		
-		exType.append(2 - exType.length(), '_');
-		filepath_src.append(255 - filepath_src.length(), '_');
-		message_id.append(3 - message_id.length(), '_');
-		startframe.append(5 - startframe.length(), '_');
-		endframe.append(5 - endframe.length(), '_');
-		user_id.append(4 - user_id.length(), '_');
+		exType.append(2 - exType.length(), '\t');
+		filepath_src.append(255 - filepath_src.length(), '\t');
+		message_id.append(3 - message_id.length(), '\t');
+		startframe.append(5 - startframe.length(), '\t');
+		endframe.append(5 - endframe.length(), '\t');
+		user_id.append(4 - user_id.length(), '\t');
 		
 		msg2.append(exType);
 		msg.append(message_id);
@@ -111,7 +111,7 @@ namespace pykinecting{
 		msg.append(endframe);
 		msg.append(BOOL_STR(loop));
 		msg.append(user_id);
-		msg.append(529 - 275, '_');
+		msg.append(529 - 275, '\t');
 		msg.append("\0");
 		msg2.append("\0");
 
@@ -132,13 +132,13 @@ namespace pykinecting{
 		std::string msg2;
 		std::vector<zmq::message_t> messages;
 
-		filepath_dest.append(255 - filepath_dest.length(), '_');
-		message_id.append(3 - message_id.length(), '_');
+		filepath_dest.append(255 - filepath_dest.length(), '\t');
+		message_id.append(3 - message_id.length(), '\t');
 		std::string exType = pykinecting::toString(type);
-		exType.append(2 - exType.length(), '_');
-		serverport.append(17 - serverport.length(), '_');
-		duration_in_secs.append(3 - duration_in_secs.length(), '_');
-		user_id.append(4 - user_id.length(), '_');
+		exType.append(2 - exType.length(), '\t');
+		serverport.append(17 - serverport.length(), '\t');
+		duration_in_secs.append(3 - duration_in_secs.length(), '\t');
+		user_id.append(4 - user_id.length(), '\t');
 
 		msg2.append(exType);
 		msg.append(message_id);
@@ -148,7 +148,7 @@ namespace pykinecting{
 		msg.append(duration_in_secs);
 		msg.append(BOOL_STR(is_compressed));
 		msg.append(user_id);
-		msg.append(529 - 286, '_');
+		msg.append(529 - 286, '\t');
 		msg.append("\0");
 		msg2.append("\0");
 
@@ -169,13 +169,13 @@ namespace pykinecting{
 		std::vector<zmq::message_t> messages;
 
 		std::string exType = pykinecting::toString(type);
-		exType.append(2 - exType.length(), '_');
-		filepath_src.append(255 - filepath_src.length(), '_');
-		filepath_dest.append(255 - filepath_dest.length(), '_');
-		message_id.append(3 - message_id.length(), '_');
-		startframe.append(5 - startframe.length(), '_');
-		endframe.append(5 - endframe.length(), '_');
-		user_id.append(4 - user_id.length(), '_');
+		exType.append(2 - exType.length(), '\t');
+		filepath_src.append(255 - filepath_src.length(), '\t');
+		filepath_dest.append(255 - filepath_dest.length(), '\t');
+		message_id.append(3 - message_id.length(), '\t');
+		startframe.append(5 - startframe.length(), '\t');
+		endframe.append(5 - endframe.length(), '\t');
+		user_id.append(4 - user_id.length(), '\t');
 
 		msg2.append(exType);
 		msg.append(message_id);
@@ -185,7 +185,7 @@ namespace pykinecting{
 		msg.append(filepath_dest);
 		msg.append(num_cameras);
 		msg.append(user_id);
-		msg.append(2, '_');
+		msg.append(2, '\t');
 		msg.append("\0");
 		msg2.append("\0");
 		
@@ -201,15 +201,15 @@ namespace pykinecting{
 	inline zmq::message_t response(Message_Type type,std::string& message_id, std::string& user_id, bool success){
 		zmq::message_t zmq_msg(10);
 		std::string msg;
-		message_id.append(3 - message_id.length(), '_');
+		message_id.append(3 - message_id.length(), '\t');
 		std::string exType = pykinecting::toString(type);
-		exType.append(2 - exType.length(), '_');
-		user_id.append(4 - user_id.length(), '_');
+		exType.append(2 - exType.length(), '\t');
+		user_id.append(4 - user_id.length(), '\t');
 		msg.append(exType);
 		msg.append(message_id);
 		msg.append(user_id);
 		msg.append(BOOL_STR(success));
-		msg.append(520, '_');
+		msg.append(520, '\t');
 		memcpy(zmq_msg.data(),&msg,10);
 		return zmq_msg;
 	}
@@ -282,7 +282,7 @@ namespace pykinecting{
 
 		for (auto i : resolvedResponse) {
 			//std::cout << i << std::endl;
-			i.erase(std::remove(i.begin(),i.end(),'_'), i.end());
+			i.erase(std::remove(i.begin(),i.end(),'\t'), i.end());
 			dickbutt.push_back(i);
 			//std::cout << i << std::endl;
 		}
