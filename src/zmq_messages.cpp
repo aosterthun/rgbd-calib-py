@@ -19,9 +19,9 @@
 #define BOOL_STR(b) ((b)?"1":"0")
 
 namespace pykinecting{
-    
+
 	enum Message_Type {PLAY, PLAY_FRAMES, RECORD, RECORD_PLAY, RESPONSE};
-	
+
 	inline std::string toString(const Message_Type& type){
 		switch (type) {
 			case PLAY:
@@ -44,33 +44,33 @@ namespace pykinecting{
 				break;
 		}
 	}
-	
+
 	inline std::ostream& operator<<  (std::ostream& os, const Message_Type& obj){
 		switch (obj) {
 			case PLAY:
 				os << "0";
 				break;
-				
+
 			default:
 				break;
 		}
 		return os;
 	}
-	
-	
+
+
 	inline std::vector<zmq::message_t> play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& user_id){
 		zmq::message_t zmq_msg(529);
 		zmq::message_t zmq_msg2(3);
 		std::string msg;
 		std::string msg2;
 		std::vector<zmq::message_t> messages;
-		
+
 		filepath_src.append(255 - filepath_src.length(), '\t');
 		message_id.append(3 - message_id.length(), '\t');
 		std::string exType = pykinecting::toString(type);
 		//exType.append(2 - exType.length(), '\t');
 		user_id.append(4 - user_id.length(), '\t');
-		
+
 		msg2.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
@@ -88,22 +88,22 @@ namespace pykinecting{
 		//std::cout << zmq_msg.size() << std::endl;
 		return messages;
 	}
-	
+
 	inline std::vector<zmq::message_t> play_frames(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop, std::string& user_id){
 		zmq::message_t zmq_msg(529);
 		zmq::message_t zmq_msg2(3);
 		std::string msg;
 		std::string msg2;
 		std::vector<zmq::message_t> messages;
-	
-		std::string exType = pykinecting::toString(type);		
+
+		std::string exType = pykinecting::toString(type);
 		exType.append(2 - exType.length(), '\t');
 		filepath_src.append(255 - filepath_src.length(), '\t');
 		message_id.append(3 - message_id.length(), '\t');
 		startframe.append(5 - startframe.length(), '\t');
 		endframe.append(5 - endframe.length(), '\t');
 		user_id.append(4 - user_id.length(), '\t');
-		
+
 		msg2.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
@@ -123,8 +123,8 @@ namespace pykinecting{
 
 		return messages;
 	}
-	
-	
+
+
 	inline std::vector<zmq::message_t> record(Message_Type type,std::string& message_id, std::string& filepath_dest, std::string serverport, std::string num_cameras, std::string duration_in_secs, bool is_compressed, std::string& user_id){
 		zmq::message_t zmq_msg(529);
 		zmq::message_t zmq_msg2(3);
@@ -132,7 +132,7 @@ namespace pykinecting{
 		std::string msg2;
 		std::vector<zmq::message_t> messages;
 
-		
+
 		std::cout << toString(type) << std::endl;
 		std::cout << message_id << std::endl;
 		std::cout << filepath_dest << std::endl;
@@ -142,13 +142,17 @@ namespace pykinecting{
 		std::cout << BOOL_STR(is_compressed) << std::endl;
 		std::cout << user_id << std::endl;
 
+
 		filepath_dest.append(255 - filepath_dest.length(), '\t');
 		message_id.append(3 - message_id.length(), '\t');
 		std::string exType = pykinecting::toString(type);
 		exType.append(2 - exType.length(), '\t');
-		serverport.append(17 - serverport.length(), '\t');
+		serverport.append(21 - serverport.length(), '\t'); // !!!!
+		std::cout << "....................................................................................." << std::endl;
+		std::cout << "still alive!" << std::endl;
 		duration_in_secs.append(3 - duration_in_secs.length(), '\t');
 		user_id.append(4 - user_id.length(), '\t');
+
 
 		msg2.append(exType);
 		msg.append(message_id);
@@ -170,7 +174,7 @@ namespace pykinecting{
 
 		return messages;
 	}
-	
+
 	inline std::vector<zmq::message_t> record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras, std::string& user_id){
 		zmq::message_t zmq_msg(529);
 		zmq::message_t zmq_msg2(3);
@@ -198,7 +202,7 @@ namespace pykinecting{
 		msg.append(2, '\t');
 		msg.append("\0");
 		msg2.append("\0");
-		
+
 		memcpy(zmq_msg.data(),msg.c_str(),529);
 		memcpy(zmq_msg2.data(),msg.c_str(),3);
 
@@ -207,7 +211,7 @@ namespace pykinecting{
 
 		return messages;
 	}
-	
+
 	inline zmq::message_t response(Message_Type type,std::string& message_id, std::string& user_id, bool success){
 		zmq::message_t zmq_msg(10);
 		std::string msg;
@@ -223,17 +227,17 @@ namespace pykinecting{
 		memcpy(zmq_msg.data(),&msg,10);
 		return zmq_msg;
 	}
-	
+
 	inline std::vector<std::string> resolveResponse(Message_Type type, zmq::message_t* response){
-		
+
 		std::string responseString;
 		char responseArray[response->size()-4];
 		std::vector<std::string> resolvedResponse;
-		
+
 		switch (type) {
 			case PLAY:
 				memcpy(&responseArray, response->data(), 530);
-				responseString = responseArray;	
+				responseString = responseArray;
 				resolvedResponse.push_back(responseString.substr(0,3));
 				resolvedResponse.push_back(responseString.substr(3,255));
 				resolvedResponse.push_back(responseString.substr(258,4));
@@ -255,12 +259,12 @@ namespace pykinecting{
 				responseString = responseArray;
 				resolvedResponse.push_back(responseString.substr(0,3));
 				resolvedResponse.push_back(responseString.substr(3,255));
-				resolvedResponse.push_back(responseString.substr(258,17));
-				resolvedResponse.push_back(responseString.substr(275,1));
-				resolvedResponse.push_back(responseString.substr(276,3));
+				resolvedResponse.push_back(responseString.substr(258,21));
 				resolvedResponse.push_back(responseString.substr(279,1));
-				resolvedResponse.push_back(responseString.substr(280,4));
-				resolvedResponse.push_back(responseString.substr(284,530-284));
+				resolvedResponse.push_back(responseString.substr(280,3));
+				resolvedResponse.push_back(responseString.substr(283,1));
+				resolvedResponse.push_back(responseString.substr(284,4));
+				resolvedResponse.push_back(responseString.substr(288,530-288));
 				break;
 			case RECORD_PLAY:
 				memcpy(&responseArray, response->data(), 530);
@@ -287,7 +291,7 @@ namespace pykinecting{
 			default:
 				break;
 		}
-		
+
 		std::vector<std::string> dickbutt;
 
 		for (auto i : resolvedResponse) {
