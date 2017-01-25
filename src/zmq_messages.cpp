@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <string>
 #include <cctype>
-#define BOOL_STR(b) ((b)?"true":"false")
+#define BOOL_STR(b) ((b)?"1":"0")
 
 namespace pykinecting{
     
@@ -131,6 +131,16 @@ namespace pykinecting{
 		std::string msg;
 		std::string msg2;
 		std::vector<zmq::message_t> messages;
+
+		
+		std::cout << toString(type) << std::endl;
+		std::cout << message_id << std::endl;
+		std::cout << filepath_dest << std::endl;
+		std::cout << serverport << std::endl;
+		std::cout << num_cameras << std::endl;
+		std::cout << duration_in_secs << std::endl;
+		std::cout << BOOL_STR(is_compressed) << std::endl;
+		std::cout << user_id << std::endl;
 
 		filepath_dest.append(255 - filepath_dest.length(), '\t');
 		message_id.append(3 - message_id.length(), '\t');
