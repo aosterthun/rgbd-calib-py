@@ -69,10 +69,10 @@ namespace pykinecting{
 		msg.append(exType);
 		msg.append(message_id);
 		msg.append(filepath_src);
-		msg.append(user_id);
+		msg.append("12");
 		msg.append(530 - 264, '_');
-		msg.append('\0');
-		//std::cout << msg.c_str() << std::endl;
+		msg.append("\0");
+		std::cout << msg.c_str() << std::endl;
 		memcpy(zmq_msg.data(),msg.c_str(),531);
 		//std::cout << zmq_msg.size() << std::endl;
 		return zmq_msg;
