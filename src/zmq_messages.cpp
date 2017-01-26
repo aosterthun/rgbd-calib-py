@@ -167,7 +167,7 @@ namespace pykinecting{
 		msg2.append("\0");
 
 		memcpy(zmq_msg.data(),msg.c_str(),529);
-		memcpy(zmq_msg2.data(),msg.c_str(),3);
+		memcpy(zmq_msg2.data(),msg2.c_str(),3);
 
 		messages.push_back(std::move(zmq_msg2));
 		messages.push_back(std::move(zmq_msg));
@@ -175,7 +175,17 @@ namespace pykinecting{
 		return messages;
 	}
 
-	inline std::vector<zmq::message_t> record_play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, std::string& filepath_dest, std::string& num_cameras, std::string& user_id){
+	inline std::vector<zmq::message_t> record_play(
+		Message_Type type,
+		std::string& message_id,
+		std::string& filepath_src,
+		std::string& startframe,
+		std::string& endframe,
+		std::string& filepath_dest,
+		std::string& num_cameras,
+		std::string& user_id,
+		std::string& num_loops_before_rec){
+
 		zmq::message_t zmq_msg(529);
 		zmq::message_t zmq_msg2(3);
 		std::string msg;
@@ -190,8 +200,11 @@ namespace pykinecting{
 		startframe.append(5 - startframe.length(), '\t');
 		endframe.append(5 - endframe.length(), '\t');
 		user_id.append(4 - user_id.length(), '\t');
+		num_loops_before_rec.append(2 - num_loops_before_rec.length(), '\t');
 
 		msg2.append(exType);
+		msg2.append("\0");
+
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(startframe);
@@ -199,9 +212,8 @@ namespace pykinecting{
 		msg.append(filepath_dest);
 		msg.append(num_cameras);
 		msg.append(user_id);
-		msg.append(2, '\t');
+		msg.append(num_loops_before_rec);
 		msg.append("\0");
-		msg2.append("\0");
 
 		memcpy(zmq_msg.data(),msg.c_str(),529);
 		memcpy(zmq_msg2.data(),msg2.c_str(),3);

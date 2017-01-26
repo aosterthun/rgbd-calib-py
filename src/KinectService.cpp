@@ -58,11 +58,15 @@ namespace pykinecting{
         std::vector<zmq::message_t> i = pykinecting::record(Message_Type::RECORD, message_id, filepath, serverport, num_cameras, duration_in_secs, is_compressed, user_id);
         ks_pub_skt->send(i[0], ZMQ_SNDMORE);
         ks_pub_skt->send(i[1], 0);
-        ++ks_message_count;    
+        ++ks_message_count;
     }
-    void KinectService::record_play(std::string user_id, std::string filepath_src, std::string startframe, std::string endframe, std::string filepath_dest, std::string num_cameras){
+    void KinectService::record_play(std::string user_id, std::string filepath_src, std::string startframe,
+        std::string endframe, std::string filepath_dest, std::string num_cameras, std::string num_loops_before_rec){
+
         std::string message_id = std::to_string(ks_message_count);
-        std::vector<zmq::message_t> i = pykinecting::record_play(Message_Type::RECORD_PLAY, message_id, filepath_src, startframe, endframe, filepath_dest, num_cameras, user_id);
+        std::vector<zmq::message_t> i = pykinecting::record_play(Message_Type::RECORD_PLAY, message_id, filepath_src,
+            startframe, endframe, filepath_dest, num_cameras, user_id, num_loops_before_rec);
+
         ks_pub_skt->send(i[0], ZMQ_SNDMORE);
         ks_pub_skt->send(i[1], 0);
         ++ks_message_count;
