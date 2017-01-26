@@ -16,7 +16,7 @@ if __name__ == "__main__":
 		kinect_service = pykinecting.KinectService(sys.argv[1])
 
 		if sys.argv[2] == "play":
-			kinect_service.play(sys.argv[3],sys.argv[4])
+			kinect_service.play(sys.argv[3],"/mnt/project_avatars/bite_the_bytes/user_" + sys.argv[3] + ".stream")
 		elif sys.argv[2] == "play_frames": 
 			kinect_service.play_frames(sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7])
 		elif sys.argv[2] == "record":
