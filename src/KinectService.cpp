@@ -26,12 +26,12 @@ namespace pykinecting{
 		  sleep(1);
 	  }
 
-	void KinectService::play(std::string user_id, std::string filename) {
+	void KinectService::play(std::string user_id, std::string filepath_src, bool is_compressed, std::string serverport, std::string num_cameras) {
 		std::string message_id = std::to_string(ks_message_count);
         std::cout << message_id << std::endl;
         std::cout << ks_message_count << std::endl;
 
-		std::vector<zmq::message_t> i = pykinecting::play(Message_Type::PLAY, message_id, filename, user_id);
+		std::vector<zmq::message_t> i = pykinecting::play(Message_Type::PLAY, message_id, filepath_src, user_id, is_compressed, serverport, num_cameras);
 		ks_pub_skt->send(i[0], ZMQ_SNDMORE);
 		ks_pub_skt->send(i[1], 0);
 
@@ -45,9 +45,9 @@ namespace pykinecting{
 		++ks_message_count;
 	}
 
-	void KinectService::play_frames(std::string user_id, std::string filename, std::string first, std::string last, bool loop){
+	void KinectService::play_frames(std::string user_id, std::string filename, std::string first, std::string last, bool loop, std::string num_cameras){
         std::string message_id = std::to_string(ks_message_count);
-        std::vector<zmq::message_t> i = pykinecting::play_frames(Message_Type::PLAY_FRAMES, message_id, filename, first, last, loop, user_id);
+        std::vector<zmq::message_t> i = pykinecting::play_frames(Message_Type::PLAY_FRAMES, message_id, filename, first, last, loop, user_id, num_cameras);
         ks_pub_skt->send(i[0], ZMQ_SNDMORE);
         ks_pub_skt->send(i[1], 0);
         ++ks_message_count;

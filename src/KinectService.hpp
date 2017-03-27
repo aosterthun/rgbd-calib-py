@@ -16,8 +16,8 @@ namespace pykinecting{
 	public:
 		KinectService(const std::string socket);
 
-		void play(std::string user_id, std::string filename);
-		void play_frames(std::string user_id, std::string filename, std::string first, std::string last, bool loop);
+		void play(std::string user_id, std::string filepath_src, bool is_compressed, std::string serverport, std::string num_cameras);
+		void play_frames(std::string user_id, std::string filename, std::string first, std::string last, bool loop, std::string num_cameras);
 		void record(std::string user_id, std::string filepath, std::string serverport, std::string num_cameras,
 			std::string duration_in_secs, bool is_compressed);
 		void record_play(std::string user_id, std::string filepath_src, std::string startframe, std::string endframe,

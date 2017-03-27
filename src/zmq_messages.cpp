@@ -18,9 +18,12 @@
 #include <cctype>
 #define BOOL_STR(b) ((b)?"1":"0")
 
+
+
+
 namespace pykinecting{
 
-	enum Message_Type {PLAY, PLAY_FRAMES, RECORD, RECORD_PLAY, RESPONSE};
+	enum Message_Type : int {PLAY = 0, PLAY_FRAMES =1, RECORD =2, RECORD_PLAY =3, RESPONSE =4};
 
 	inline std::string toString(const Message_Type& type){
 		switch (type) {
@@ -58,7 +61,7 @@ namespace pykinecting{
 	}
 
 
-	inline std::vector<zmq::message_t> play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& user_id){
+	inline std::vector<zmq::message_t> play(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& user_id,bool is_compressed, std::string serverport, std::string num_cameras){
 		zmq::message_t zmq_msg(529);
 		zmq::message_t zmq_msg2(3);
 		std::string msg;
@@ -68,6 +71,7 @@ namespace pykinecting{
 		filepath_src.append(255 - filepath_src.length(), '\t');
 		message_id.append(3 - message_id.length(), '\t');
 		std::string exType = pykinecting::toString(type);
+		serverport.append(21 - serverport.length(), '\t');
 		//exType.append(2 - exType.length(), '\t');
 		user_id.append(4 - user_id.length(), '\t');
 
@@ -75,7 +79,10 @@ namespace pykinecting{
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(user_id);
-		msg.append(529 - 264, '\t');
+		msg.append(BOOL_STR(is_compressed));
+		msg.append(serverport);
+		msg.append(num_cameras);
+		msg.append(529 - 243, '\t');
 		msg.append("\0");
 		msg2.append("\0");
 		//std::cout << msg.c_str() << std::endl;
@@ -89,7 +96,7 @@ namespace pykinecting{
 		return messages;
 	}
 
-	inline std::vector<zmq::message_t> play_frames(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop, std::string& user_id){
+	inline std::vector<zmq::message_t> play_frames(Message_Type type,std::string& message_id, std::string& filepath_src, std::string& startframe, std::string& endframe, bool loop, std::string& user_id, std::string& num_cameras){
 		zmq::message_t zmq_msg(529);
 		zmq::message_t zmq_msg2(3);
 		std::string msg;
@@ -105,14 +112,17 @@ namespace pykinecting{
 		user_id.append(4 - user_id.length(), '\t');
 
 		msg2.append(exType);
+
 		msg.append(message_id);
 		msg.append(filepath_src);
 		msg.append(startframe);
 		msg.append(endframe);
 		msg.append(BOOL_STR(loop));
 		msg.append(user_id);
+		msg.append(num_cameras);
 		msg.append(529 - 275, '\t');
 		msg.append("\0");
+
 		msg2.append("\0");
 
 		memcpy(zmq_msg.data(),msg.c_str(),529);
@@ -132,7 +142,6 @@ namespace pykinecting{
 		std::string msg2;
 		std::vector<zmq::message_t> messages;
 
-
 		std::cout << toString(type) << std::endl;
 		std::cout << message_id << std::endl;
 		std::cout << filepath_dest << std::endl;
@@ -143,18 +152,17 @@ namespace pykinecting{
 		std::cout << user_id << std::endl;
 
 
+
 		filepath_dest.append(255 - filepath_dest.length(), '\t');
 		message_id.append(3 - message_id.length(), '\t');
 		std::string exType = pykinecting::toString(type);
 		exType.append(2 - exType.length(), '\t');
-		serverport.append(21 - serverport.length(), '\t'); // !!!!
-		std::cout << "....................................................................................." << std::endl;
-		std::cout << "still alive!" << std::endl;
+		serverport.append(21 - serverport.length(), '\t');
 		duration_in_secs.append(3 - duration_in_secs.length(), '\t');
 		user_id.append(4 - user_id.length(), '\t');
 
-
 		msg2.append(exType);
+
 		msg.append(message_id);
 		msg.append(filepath_dest);
 		msg.append(serverport);
@@ -164,6 +172,7 @@ namespace pykinecting{
 		msg.append(user_id);
 		msg.append(529 - 286, '\t');
 		msg.append("\0");
+
 		msg2.append("\0");
 
 		memcpy(zmq_msg.data(),msg.c_str(),529);
@@ -253,7 +262,10 @@ namespace pykinecting{
 				resolvedResponse.push_back(responseString.substr(0,3));
 				resolvedResponse.push_back(responseString.substr(3,255));
 				resolvedResponse.push_back(responseString.substr(258,4));
-				resolvedResponse.push_back(responseString.substr(262,530-262));
+				resolvedResponse.push_back(responseString.substr(262,1));
+				resolvedResponse.push_back(responseString.substr(263,21));
+				resolvedResponse.push_back(responseString.substr(284,1));
+				resolvedResponse.push_back(responseString.substr(285,530-285));
 				break;
 			case PLAY_FRAMES:
 				memcpy(&responseArray, response->data(), 530);
@@ -264,7 +276,8 @@ namespace pykinecting{
 				resolvedResponse.push_back(responseString.substr(263,5));
 				resolvedResponse.push_back(responseString.substr(268,1));
 				resolvedResponse.push_back(responseString.substr(269,4));
-				resolvedResponse.push_back(responseString.substr(273,530-273));
+				resolvedResponse.push_back(responseString.substr(273,1));
+				resolvedResponse.push_back(responseString.substr(274,530-274));
 				break;
 			case RECORD:
 				memcpy(&responseArray, response->data(), 530);
