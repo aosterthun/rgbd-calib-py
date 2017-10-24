@@ -29,6 +29,7 @@ private:
 	std::shared_ptr<zmq::socket_t> pub_skt;
 	std::shared_ptr<zmq::socket_t> sub_skt;
 	int recv_timeo;
+	std::string kinect_daemon_port;
 	
 public:
 	KinectDaemon(std::string const& _server_adress);
