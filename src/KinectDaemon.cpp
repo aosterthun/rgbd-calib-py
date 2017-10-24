@@ -19,58 +19,62 @@
 KinectDaemon::KinectDaemon(const std::string &_serverport)
 {
 	this->recv_timeo = 2000;
-	zmq::context_t _ctx(1);
-	zmq::socket_t _pub_skt(_ctx, ZMQ_PUB);
-	_pub_skt.bind("tcp://127.0.0.1:8001");
-	//this->ctx = std::make_shared<zmq::context_t>(1);
-	//this->pub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_PUB);
-	//this->sub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_SUB);
+	this->ctx = std::make_shared<zmq::context_t>(1);
+	this->pub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_PUB);
+	this->sub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_SUB);
 	
-	//this->pub_skt->connect("tcp://127.0.0.1:8001");
-	//this->sub_skt->bind("tcp://127.0.0.1:8002");
-	//this->sub_skt->setsockopt(ZMQ_RCVTIMEO, &this->recv_timeo, sizeof(this->recv_timeo));
-	
-	
+	this->pub_skt->connect("tcp://141.54.147.32:8001");
+	this->sub_skt->bind("tcp://*:8002");
+    this->sub_skt->setsockopt(ZMQ_SUBSCRIBE, "", 0);
+	this->sub_skt->setsockopt(ZMQ_RCVTIMEO, &this->recv_timeo, sizeof(this->recv_timeo));
+
+    sleep(1);
+
+
 	/*
 	 Send handshake:
 		- Client IP
-	 */
-//	std::shared_ptr<KinectDaemonHandshake> _handshake = std::make_shared<KinectDaemonHandshake>();
-//	_handshake->client_ip("127.0.0.1");
-//	
-//	std::stringstream _handshake_stream;
-//	boost::archive::text_oarchive _handshake_archive(_handshake_stream);
-//	_handshake_archive << _handshake.get();
-//	std::string _handshake_msg_str = _handshake_stream.str();
-//	
-//	std::shared_ptr<zmq::message_t> _send_handshake = std::make_shared<zmq::message_t>(_handshake_msg_str.length());
-//	memcpy(_send_handshake->data(), _handshake_msg_str.data(), _handshake_msg_str.length());
-	
-	
-	int _j = 0;
+    */
+
+	KinectDaemonHandshake _handshake{};
+    _handshake.client_ip("127.0.0.1");
+
+    std::stringstream _handshake_ostream;
+    {
+        boost::archive::text_oarchive _handshake_archive(_handshake_ostream);
+        _handshake_archive & _handshake;
+    }
+
+
+
+    std::string _handshake_msg_str{_handshake_ostream.str()};
+    zmq::message_t _send_handshake{_handshake_msg_str.size()};
+    memcpy((void *)_send_handshake.data(), _handshake_msg_str.data(), _handshake_msg_str.size());
+
+    auto _handshake_string = std::string(static_cast<char *>(_send_handshake.data()), _send_handshake.size());
+    std::stringstream _handshake_stream{_handshake_string};
+    boost::archive::text_iarchive _handshake_archive{_handshake_stream};
+    KinectDaemonHandshake _recv_handshake{};
+    _handshake_archive >> _recv_handshake;
+    std::cout << _recv_handshake.client_ip() << std::endl;
+    this->pub_skt->send(_send_handshake);
+
 
 	
-	while(true){
-		zmq::message_t _msg(sizeof(int));
-		memcpy((char*) _msg.data(), (const char*)&_j, sizeof(int));
-		std::cout << "Sending: " << _j << std::endl;
-		_pub_skt.send(_msg);
-		++_j;
-		
-	}
+
 	/*
 	 Receive handshake OK
 	 Timeout: 2s (this->recv_timeo)
 	 */
-//	std::shared_ptr<zmq::message_t> _recv_handshake = std::make_shared<zmq::message_t>();
-//	if(this->sub_skt->recv(_recv_handshake.get()))
-//	{
-//		std::cout << "Received handshake answer" << std::endl;
-//	}
-//	else
-//	{
-//		//throw some error
-//	}
+	zmq::message_t _recv_ohandshake;
+	if(this->sub_skt->recv(&_recv_ohandshake))
+	{
+		std::cout << "Received handshake answer" << std::endl;
+	}
+	else
+	{
+        std::cout << "Did not receive handshake answer" << std::endl;
+	}
 }
 //
 //std::shared_ptr<PlayCommand> KinectDaemon::play(const std::string &_filename)

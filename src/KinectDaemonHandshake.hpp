@@ -31,6 +31,7 @@ private:
 	std::string client_ip_mem;
 
 public:
+	KinectDaemonHandshake();
 	void client_ip(std::string _client_ip);
 	std::string client_ip();
 };
