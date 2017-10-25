@@ -23,13 +23,12 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
 	this->pub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_PUB);
 	this->sub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_SUB);
 	
-	this->pub_skt->connect("tcp://" + _serverport + ":8001");
-	this->sub_skt->bind("tcp://*:8002");
+	this->pub_skt->connect("tcp://" + _serverport + ":8000");
+	this->sub_skt->bind("tcp://*:8000");
     this->sub_skt->setsockopt(ZMQ_SUBSCRIBE, "", 0);
 	this->sub_skt->setsockopt(ZMQ_RCVTIMEO, &this->recv_timeo, sizeof(this->recv_timeo));
 
     sleep(1);
-
 
 	/*
 	 Send handshake:
@@ -37,15 +36,13 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
     */
 
 	KinectDaemonHandshake _handshake{};
-    _handshake.client_ip("141.54.147.27");
+    _handshake.client_ip("141.54.147.35");
 
     std::stringstream _handshake_ostream;
     {
         boost::archive::text_oarchive _handshake_archive(_handshake_ostream);
         _handshake_archive & _handshake;
     }
-
-
 
     std::string _handshake_msg_str{_handshake_ostream.str()};
     zmq::message_t _send_handshake{_handshake_msg_str.size()};
@@ -58,9 +55,6 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
     _handshake_archive >> _recv_handshake;
     std::cout << "Client_IP:" << _recv_handshake.client_ip() << std::endl;
     this->pub_skt->send(_send_handshake);
-
-
-	
 
 	/*
 	 Receive handshake OK
@@ -75,6 +69,7 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
         std::stringstream _handshake_stream(_handshake_string);
         boost::archive::text_iarchive _handshake_archive(_handshake_stream);
         _handshake_archive & *_recv_handshake.get();
+        this->kinect_daemon_com_port = _recv_handshake->client_ip();
         std::cout << "ComPort:" << _recv_handshake->client_ip() << std::endl;
 	}
 	else
@@ -82,47 +77,35 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
         std::cout << "Did not receive handshake answer" << std::endl;
 	}
 }
-/*
+
 std::shared_ptr<PlayCommand> KinectDaemon::play(const std::string &_filename)
 {
-	std::shared_ptr<PlayCommand> _play = std::make_shared<PlayCommand>(_filename);
+	std::shared_ptr<PlayCommand> _play = std::make_shared<PlayCommand>();
+    _play->filename("test.stream");
 	this->execute(ZMQMessageType::PLAY, _play);
 	return _play;
 }
-
+/*
 void KinectDaemon::open_cmd_backchannel(std::shared_ptr<Event> _event, unsigned _unique_thread_id)
 {
 
 }
-
+*/
 void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd)
 {
-	std::shared_ptr<AbstractCommand> _exe;
-	switch (_type) {
-		case PLAY: {
-			std::shared_ptr<PlayCommand> _exe(dynamic_cast<PlayCommand*>(_cmd.get()));
-			break;
-		}
-		case PLAY_RECORD_IN_SYNC:{
-			//std::shared_ptr<PlayCommand> _exe(dynamic_cast<PlayCommand*>(_cmd.get()));
-			break;
-		}
-		case RECORD:{
-			//std::shared_ptr<RecordCommand> _exe(dynamic_cast<RecordCommand*>(_cmd.get()));
-			break;
-		}
-	}
+	std::shared_ptr<PlayCommand> _exe(dynamic_cast<PlayCommand*>(_cmd.get()));
+
 
 	zmq::context_t _ctx(1);
 	zmq::socket_t _skt(_ctx, ZMQ_PUB);
-	_skt.connect("tcp://127.0.0.1:8000");
+	_skt.connect("tcp://" + this->kinect_daemon_com_port);
 
 	std::stringstream _type_stream;
 	std::stringstream _exe_stream;
 	boost::archive::text_oarchive _type_archive(_type_stream);
 	boost::archive::text_oarchive _exe_archive(_exe_stream);
 	_type_archive << _type;
-	_exe_archive << _exe;
+	_exe_archive << *_exe.get();
 
 
 	std::string _type_msg_str = _type_stream.str();
@@ -139,4 +122,3 @@ void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand
 
 	//this->start_thread(std::bind(&KinectDaemon::open_cmd_backchannel,this,this->unique_thread_id), <#std::shared_ptr<Event> _event#>)
 }
-*/

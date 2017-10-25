@@ -17,27 +17,27 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <sstream>
 #include <zmq.hpp>
-#include "KinectDaemon.hpp"
-#include "Threadable.hpp"
-#include "ZMQMessageType.hpp"
-#include "KinectDaemonHandshake.hpp"
+#include <Threadable.hpp>
+#include <ZMQMessageType.hpp>
+#include <KinectDaemonHandshake.hpp>
+#include <PlayCommand.hpp>
 
-class KinectDaemon : public Threadable
+class KinectDaemon
 {
 private:
 	std::shared_ptr<zmq::context_t> ctx;
 	std::shared_ptr<zmq::socket_t> pub_skt;
 	std::shared_ptr<zmq::socket_t> sub_skt;
 	int recv_timeo;
-	std::string kinect_daemon_port;
+	std::string kinect_daemon_com_port;
 	
 public:
 	KinectDaemon(std::string const& _server_adress);
 //	std::shared_ptr<PlayCommand> play();
-//	std::shared_ptr<PlayCommand> play(std::string const& _filename);
+	std::shared_ptr<PlayCommand> play(std::string const& _filename);
 //	std::shared_ptr<PlayCommand> play(std::string const& _filename,unsigned _num_kinect_cameras = 4);
-//	void execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd);
-	void open_cmd_backchannel(std::shared_ptr<Event> _event);
+	void execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd);
+//	void open_cmd_backchannel(std::shared_ptr<Event> _event);
 };
 
 #endif /* KinectDaemon_hpp */
