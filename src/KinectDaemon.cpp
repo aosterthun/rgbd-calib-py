@@ -36,7 +36,7 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
     */
 
 	KinectDaemonHandshake _handshake{};
-    _handshake.client_ip("141.54.147.35");
+    _handshake.client_ip("192.168.188.133");
 
     std::stringstream _handshake_ostream;
     {
