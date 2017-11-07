@@ -36,7 +36,7 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
     */
 
 	KinectDaemonHandshake _handshake{};
-    _handshake.client_ip("192.168.188.133");
+    _handshake.client_ip("192.168.188.113");
 
     std::stringstream _handshake_ostream;
     {
@@ -78,12 +78,11 @@ KinectDaemon::KinectDaemon(const std::string &_serverport)
 	}
 }
 
-std::shared_ptr<PlayCommand> KinectDaemon::play(const std::string &_filename)
+void KinectDaemon::play(const std::string &_filename)
 {
 	std::shared_ptr<PlayCommand> _play = std::make_shared<PlayCommand>();
     _play->filename("test.stream");
 	this->execute(ZMQMessageType::PLAY, _play);
-	return _play;
 }
 /*
 void KinectDaemon::open_cmd_backchannel(std::shared_ptr<Event> _event, unsigned _unique_thread_id)
@@ -93,32 +92,37 @@ void KinectDaemon::open_cmd_backchannel(std::shared_ptr<Event> _event, unsigned 
 */
 void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd)
 {
-	std::shared_ptr<PlayCommand> _exe(dynamic_cast<PlayCommand*>(_cmd.get()));
-
+	//std::shared_ptr<PlayCommand> _exe(std::dynamic_pointer_cast<PlayCommand>(_cmd));
+	PlayCommand _exe;
+	_exe.filename("test");
 
 	zmq::context_t _ctx(1);
 	zmq::socket_t _skt(_ctx, ZMQ_PUB);
-	_skt.connect("tcp://" + this->kinect_daemon_com_port);
+	_skt.bind("tcp://0.0.0.0:8006");
+sleep(1);
 
 	std::stringstream _type_stream;
-	std::stringstream _exe_stream;
-	boost::archive::text_oarchive _type_archive(_type_stream);
-	boost::archive::text_oarchive _exe_archive(_exe_stream);
-	_type_archive << _type;
-	_exe_archive << *_exe.get();
+	
+{
+        boost::archive::text_oarchive _type_archive{_type_stream};
+        _type_archive & _type;
+    }
+std::stringstream _exe_stream;
+{
+        boost::archive::text_oarchive _exe_archive{_exe_stream};
+        _exe_archive & _exe;
+    }
 
 
 	std::string _type_msg_str = _type_stream.str();
 	std::string _exe_msg_str = _exe_stream.str();
-	zmq::message_t _type_msg(_type_msg_str.length());
-	zmq::message_t _exe_msg(_exe_msg_str.length());
+	zmq::message_t _type_msg{_type_msg_str.size()};
+	zmq::message_t _exe_msg{_exe_msg_str.size()};
 
-
-	memcpy(_type_msg.data(), _type_msg_str.data(), _type_msg_str.length());
-	memcpy(_exe_msg.data(), _exe_msg_str.data(), _exe_msg_str.length());
+	memcpy((void *)_type_msg.data(), _type_msg_str.data(), _type_msg_str.size());
+	memcpy((void *)_exe_msg.data(), _exe_msg_str.data(), _exe_msg_str.size());
 
 	_skt.send(_type_msg, ZMQ_SNDMORE);
 	_skt.send(_exe_msg, 0);
-
 	//this->start_thread(std::bind(&KinectDaemon::open_cmd_backchannel,this,this->unique_thread_id), <#std::shared_ptr<Event> _event#>)
 }
