@@ -2,7 +2,7 @@
 
 int main(int argc, char** argv){
 	
-	std::shared_ptr<KinectDaemon> _daemon = std::make_shared<KinectDaemon>("141.54.147.35");
+	std::shared_ptr<KinectDaemon> _daemon = std::make_shared<KinectDaemon>("192.168.188.105");
 	_daemon->play("test_file");
 	return 0;
 }
