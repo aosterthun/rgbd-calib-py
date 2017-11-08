@@ -98,7 +98,8 @@ void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand
 
 	zmq::context_t _ctx(1);
 	zmq::socket_t _skt(_ctx, ZMQ_PUB);
-	_skt.bind("tcp://0.0.0.0:8006");
+	std::cout << this->kinect_daemon_com_port.substr(this->kinect_daemon_com_port.find(":")+1,this->kinect_daemon_com_port.length()) << std::endl;
+	_skt.bind("tcp://0.0.0.0:"+this->kinect_daemon_com_port.substr(this->kinect_daemon_com_port.find(":")+1,this->kinect_daemon_com_port.length()));
 sleep(1);
 
 	std::stringstream _type_stream;

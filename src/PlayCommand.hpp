@@ -21,6 +21,7 @@
 #include <AbstractCommand.hpp>
 #include <Observable.hpp>
 #include <CommandStatus.hpp>
+#include <ThreadEvent.hpp>
 
 class ZMQMessagingChannel;
 
@@ -32,12 +33,14 @@ private:
 	std::shared_ptr<zmq::socket_t> zmq_sub_socket;
 	std::string cmd_filename;
 	std::string cmd_server_address;
+    std::string cmd_backchannel_com_port;
 	unsigned cmd_num_kinect_cameras;
 	unsigned cmd_max_fps;
 	bool cmd_rgb_is_compressed;
 	bool cmd_loop;
 	int cmd_startframe;
 	int cmd_endframe;
+
 	
 	friend class boost::serialization::access;
 	template<class Archive>
@@ -53,9 +56,9 @@ private:
 	}
 public:
 	PlayCommand();
+    void set_backchannel_com_port(std::string const& _com_port);
+    std::vector<std::string> get_backchannel_port(bool _port_only);
     void execute(std::shared_ptr<Event> _event);
-    void set_filename(std::string const& _filename);
-    std::string get_filename();
 	void listen_on_backchannel();
 	void send_on_backchannel(int const _status);
 	void filename(std::string const& _filename);
