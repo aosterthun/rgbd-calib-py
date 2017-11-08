@@ -93,12 +93,13 @@ void KinectDaemon::open_cmd_backchannel(std::shared_ptr<Event> _event, unsigned 
 */
 void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd)
 {
+
 	std::shared_ptr<PlayCommand> _exe(dynamic_cast<PlayCommand*>(_cmd.get()));
 
 
 	zmq::context_t _ctx(1);
 	zmq::socket_t _skt(_ctx, ZMQ_PUB);
-	_skt.connect("tcp://" + this->kinect_daemon_com_port);
+	_skt.connect("tcp://0.0.0.0:" + this->kinect_daemon_com_port);
 
 	std::stringstream _type_stream;
 	std::stringstream _exe_stream;
