@@ -10,13 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eb841457-c423-4338-9c25-8f73140a93cf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/arne.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ZMQMessage.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ZMQMessage.hpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/EventData.cpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/EventData.hpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ThreadEvent.cpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ThreadEvent.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/kinect_client" afterPath="$PROJECT_DIR$/examples/kinect_client" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AbstractCommand.hpp" afterPath="$PROJECT_DIR$/src/AbstractCommand.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Makefile" afterPath="$PROJECT_DIR$/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/kinect_client.cpp" afterPath="$PROJECT_DIR$/examples/kinect_client.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/KinectDaemon.cpp" afterPath="$PROJECT_DIR$/src/KinectDaemon.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/KinectDaemon.hpp" afterPath="$PROJECT_DIR$/src/KinectDaemon.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PlayCommand.cpp" afterPath="$PROJECT_DIR$/src/PlayCommand.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PlayCommand.hpp" afterPath="$PROJECT_DIR$/src/PlayCommand.hpp" />
     </list>
@@ -34,7 +36,7 @@
         <entry file="file://$PROJECT_DIR$/examples/kinect_client.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+              <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -43,8 +45,8 @@
       <file leaf-file-name="KinectDaemon.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/KinectDaemon.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="616">
-              <caret line="120" column="22" lean-forward="true" selection-start-line="120" selection-start-column="22" selection-end-line="120" selection-end-column="22" />
+            <state relative-caret-position="376">
+              <caret line="110" column="22" lean-forward="false" selection-start-line="110" selection-start-column="22" selection-end-line="110" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -63,9 +65,11 @@
       <file leaf-file-name="PlayCommand.hpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PlayCommand.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="346">
+              <caret line="62" column="30" lean-forward="false" selection-start-line="62" selection-start-column="30" selection-end-line="62" selection-end-column="30" />
+              <folding>
+                <element signature="e#1102#1117#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -84,8 +88,23 @@
         <entry file="file://$PROJECT_DIR$/src/PlayCommand.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="346">
-              <caret line="84" column="1" lean-forward="true" selection-start-line="84" selection-start-column="1" selection-end-line="84" selection-end-column="1" />
-              <folding />
+              <caret line="104" column="1" lean-forward="false" selection-start-line="104" selection-start-column="1" selection-end-line="104" selection-end-column="1" />
+              <folding>
+                <marker date="1512314647179" expanded="true" signature="526:551" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="3552:3663" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="3704:3737" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="3796:3832" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="3875:3906" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="3976:4024" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4073:4110" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4178:4234" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4284:4325" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4371:4405" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4444:4474" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4536:4590" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4635:4675" ph="{...}" />
+                <marker date="1512314647179" expanded="true" signature="4711:4739" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -110,6 +129,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="KinectDaemon.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/KinectDaemon.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="2" lean-forward="false" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
@@ -128,10 +157,10 @@
         <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/examples/kinect_client.cpp" />
         <option value="$PROJECT_DIR$/src/ZMQMessage.hpp" />
-        <option value="$PROJECT_DIR$/src/PlayCommand.hpp" />
         <option value="$PROJECT_DIR$/src/PlayCommand.cpp" />
         <option value="$PROJECT_DIR$/src/AbstractCommand.hpp" />
         <option value="$PROJECT_DIR$/src/KinectDaemon.cpp" />
+        <option value="$PROJECT_DIR$/src/PlayCommand.hpp" />
       </list>
     </option>
   </component>
@@ -248,7 +277,7 @@
       <workItem from="1511358992347" duration="376000" />
       <workItem from="1511873346993" duration="78000" />
       <workItem from="1511873434878" duration="337000" />
-      <workItem from="1512314024431" duration="543000" />
+      <workItem from="1512314024431" duration="757000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed zmq messaging errors.">
       <created>1508854152759</created>
@@ -289,7 +318,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24473000" />
+    <option name="totallyTimeSpent" value="24687000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1345" y="-4" width="1857" height="1092" extended-state="6" />
@@ -365,7 +394,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1422">
           <caret line="79" column="26" lean-forward="false" selection-start-line="79" selection-start-column="18" selection-end-line="79" selection-end-column="26" />
-          <folding />
+          <folding>
+            <marker date="1512314647179" expanded="true" signature="526:551" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3552:3663" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3704:3737" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3796:3832" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3875:3906" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3976:4024" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4073:4110" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4178:4234" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4284:4325" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4371:4405" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4444:4474" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4536:4590" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4635:4675" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4711:4739" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -421,7 +465,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="612">
           <caret line="34" column="36" lean-forward="false" selection-start-line="34" selection-start-column="36" selection-end-line="34" selection-end-column="36" />
-          <folding />
+          <folding>
+            <element signature="e#1102#1117#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -437,7 +483,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1422">
           <caret line="79" column="26" lean-forward="false" selection-start-line="79" selection-start-column="18" selection-end-line="79" selection-end-column="26" />
-          <folding />
+          <folding>
+            <marker date="1512314647179" expanded="true" signature="526:551" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3552:3663" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3704:3737" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3796:3832" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3875:3906" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3976:4024" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4073:4110" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4178:4234" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4284:4325" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4371:4405" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4444:4474" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4536:4590" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4635:4675" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4711:4739" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -501,7 +562,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#1102#1117#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -517,7 +580,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1422">
           <caret line="79" column="26" lean-forward="false" selection-start-line="79" selection-start-column="18" selection-end-line="79" selection-end-column="26" />
-          <folding />
+          <folding>
+            <marker date="1512314647179" expanded="true" signature="526:551" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3552:3663" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3704:3737" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3796:3832" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3875:3906" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3976:4024" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4073:4110" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4178:4234" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4284:4325" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4371:4405" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4444:4474" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4536:4590" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4635:4675" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4711:4739" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -650,14 +728,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/KinectDaemon.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="2" lean-forward="false" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Threadable.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -677,7 +747,7 @@
     <entry file="file://$PROJECT_DIR$/examples/kinect_client.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -714,14 +784,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PlayCommand.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/AbstractCommand.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -733,8 +795,23 @@
     <entry file="file://$PROJECT_DIR$/src/PlayCommand.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="346">
-          <caret line="84" column="1" lean-forward="true" selection-start-line="84" selection-start-column="1" selection-end-line="84" selection-end-column="1" />
-          <folding />
+          <caret line="104" column="1" lean-forward="false" selection-start-line="104" selection-start-column="1" selection-end-line="104" selection-end-column="1" />
+          <folding>
+            <marker date="1512314647179" expanded="true" signature="526:551" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3552:3663" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3704:3737" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3796:3832" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3875:3906" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="3976:4024" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4073:4110" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4178:4234" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4284:4325" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4371:4405" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4444:4474" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4536:4590" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4635:4675" ph="{...}" />
+            <marker date="1512314647179" expanded="true" signature="4711:4739" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -746,10 +823,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/PlayCommand.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="62" column="30" lean-forward="false" selection-start-line="62" selection-start-column="30" selection-end-line="62" selection-end-column="30" />
+          <folding>
+            <element signature="e#1102#1117#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KinectDaemon.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="2" lean-forward="false" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/KinectDaemon.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="616">
-          <caret line="120" column="22" lean-forward="true" selection-start-line="120" selection-start-column="22" selection-end-line="120" selection-end-column="22" />
+        <state relative-caret-position="376">
+          <caret line="110" column="22" lean-forward="false" selection-start-line="110" selection-start-column="22" selection-end-line="110" selection-end-column="22" />
           <folding />
         </state>
       </provider>

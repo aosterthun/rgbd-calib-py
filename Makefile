@@ -18,7 +18,7 @@ default: $(TARGET)
 	@echo SOURCES: $(SOURCES)
 	@echo built $(TARGET)
 	c++ -std=c++11 -c examples/kinect_client.cpp -o examples/kinect_client.o -Isrc
-	c++ -std=c++11 examples/kinect_client.o src/Event.o src/KinectDaemon.o src/KinectDaemonHandshake.o src/Observable.o src/PlayCommand.o src/Threadable.o src/ZMQMessageType.o -o examples/kinect_client -lboost_system -lboost_serialization -lzmq -pthread
+	c++ -std=c++11 examples/kinect_client.o src/Event.o src/KinectDaemon.o src/KinectDaemonHandshake.o src/Observable.o src/PlayCommand.o src/Threadable.o src/ZMQMessageType.o src/ThreadEvent.o src/EventData.o -o examples/kinect_client -lboost_system -lboost_serialization -lzmq -pthread
 
 $(TARGET): $(OBJECTS)
 	$(CC) -shared $(OBJECTS) $(LIBS) -Wl,-rpath,$(PYLIBPATH) -Wl,-rpath,$(BOOSTLIBPATH) -Wl,-rpath,$(ZMQLIBPATH) -o $@

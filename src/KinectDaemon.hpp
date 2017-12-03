@@ -34,7 +34,7 @@ private:
 public:
 	KinectDaemon(std::string const& _server_adress);
 //	std::shared_ptr<PlayCommand> play();
-	std::shared_ptr<PlayCommand> play(std::string const& _filename);
+	void play(std::string const& _filename);
 //	std::shared_ptr<PlayCommand> play(std::string const& _filename,unsigned _num_kinect_cameras = 4);
 	void execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd);
 //	void open_cmd_backchannel(std::shared_ptr<Event> _event);
