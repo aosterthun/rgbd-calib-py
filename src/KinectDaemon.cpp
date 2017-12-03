@@ -118,8 +118,7 @@ void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand
 	memcpy(_type_msg.data(), _type_msg_str.data(), _type_msg_str.length());
 	memcpy(_exe_msg.data(), _exe_msg_str.data(), _exe_msg_str.length());
 
-	_skt.send(_type_msg, ZMQ_SNDMORE);
-	_skt.send(_exe_msg, 0);
+	_skt.send(_exe_msg);
 
 	//this->start_thread(std::bind(&KinectDaemon::open_cmd_backchannel,this,this->unique_thread_id), <#std::shared_ptr<Event> _event#>)
 }

@@ -13,17 +13,18 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include "Event.hpp"
+#include <ZMQMessageType.hpp>
 
 class AbstractCommand
 {
 private:
-	std::string test;
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
-		ar & test;
+
 	}
 public:
+	virtual ZMQMessageType get_type() = 0;
 	virtual void execute(std::shared_ptr<Event> _event) = 0;
 };
 

@@ -21,7 +21,7 @@
 #include <AbstractCommand.hpp>
 #include <Observable.hpp>
 #include <CommandStatus.hpp>
-
+#include <ZMQMessageType.hpp>
 class ZMQMessagingChannel;
 
 class PlayCommand : public AbstractCommand, public Observable
@@ -54,6 +54,7 @@ private:
 public:
 	PlayCommand();
     void execute(std::shared_ptr<Event> _event);
+	ZMQMessageType get_type();
     void set_filename(std::string const& _filename);
     std::string get_filename();
 	void listen_on_backchannel();
