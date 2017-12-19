@@ -21,6 +21,7 @@
 #include <ZMQMessageType.hpp>
 #include <KinectDaemonHandshake.hpp>
 #include <PlayCommand.hpp>
+#include <GenericMessage.hpp>
 
 class KinectDaemon
 {
@@ -32,9 +33,9 @@ private:
 	std::string kinect_daemon_com_port;
 	
 public:
-	KinectDaemon(std::string const& _server_adress);
+	KinectDaemon(std::string const& _server_port, std::string const& _client_port);
 //	std::shared_ptr<PlayCommand> play();
-	void play(std::string const& _filename);
+	std::shared_ptr<PlayCommand> play(std::string const& _filename);
 //	std::shared_ptr<PlayCommand> play(std::string const& _filename,unsigned _num_kinect_cameras = 4);
 	void execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd);
 //	void open_cmd_backchannel(std::shared_ptr<Event> _event);
