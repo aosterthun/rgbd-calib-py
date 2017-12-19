@@ -21,6 +21,7 @@
 #include <AbstractCommand.hpp>
 #include <Observable.hpp>
 #include <CommandStatus.hpp>
+#include <ZMQMessageType.hpp>
 #include <ThreadEvent.hpp>
 
 class ZMQMessagingChannel;
@@ -59,6 +60,7 @@ public:
     void set_backchannel_com_port(std::string const& _com_port);
     std::vector<std::string> get_backchannel_port(bool _port_only);
     void execute(std::shared_ptr<Event> _event);
+	ZMQMessageType get_type();
 	void listen_on_backchannel();
 	void send_on_backchannel(int const _status);
 	void filename(std::string const& _filename);

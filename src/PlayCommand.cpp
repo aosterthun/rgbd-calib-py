@@ -116,6 +116,10 @@ void PlayCommand::execute(std::shared_ptr<Event> _event)
 	_backchannel_listen_thread->join();
 }
 
+ZMQMessageType PlayCommand::get_type() {
+	return ZMQMessageType::PLAY;
+}
+
 void PlayCommand::filename(std::string const& _filename)
 {
 	this->cmd_filename = _filename;
