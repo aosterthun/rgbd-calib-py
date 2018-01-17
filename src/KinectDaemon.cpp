@@ -81,7 +81,7 @@ KinectDaemon::KinectDaemon(std::string const& _server_port, std::string const& _
 std::shared_ptr<PlayCommand> KinectDaemon::play(const std::string &_filename)
 {
 	std::shared_ptr<PlayCommand> _play = std::make_shared<PlayCommand>();
-    _play->filename("test.stream");
+    _play->filename(_filename);
 	this->execute(ZMQMessageType::PLAY, _play);
 	return _play;
 }
@@ -96,6 +96,7 @@ void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand
 	//std::shared_ptr<PlayCommand> _exe(std::dynamic_pointer_cast<PlayCommand>(_cmd));
 	PlayCommand _exe;
 	_exe.filename("test");
+	_exe.server_address("127.0.0.1");
 
 	zmq::context_t _ctx(1);
 	zmq::socket_t _skt(_ctx, ZMQ_PUB);
