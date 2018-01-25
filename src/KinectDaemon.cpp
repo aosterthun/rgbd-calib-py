@@ -6,14 +6,6 @@
 //  Copyright © 2017 Arne Osterthun. All rights reserved.
 //
 
-//  CommandStatus _cmd_status = CommandStatus::PAUSE;
-//	std::stringstream _cmd_status_stream;
-//	boost::archive::text_oarchive _cmd_status_archive(_cmd_status_stream);
-//	_cmd_status_archive << _cmd_status;
-//	std::string _cmd_status_msg_str = _cmd_status_stream.str();
-//	zmq::message_t _cmd_status_msg(_cmd_status_msg_str.length());
-//	memcpy(_cmd_status_msg.data(), _cmd_status_msg_str.data(), _cmd_status_msg_str.length());
-//	_skt1.send(_cmd_status_msg);
 #include "KinectDaemon.hpp"
 
 KinectDaemon::KinectDaemon(std::string const& _server_port, std::string const& _client_port)
@@ -78,13 +70,61 @@ KinectDaemon::KinectDaemon(std::string const& _server_port, std::string const& _
 	}
 }
 
+void KinectDaemon::update(Observable *_observable) {
+    throw NotImplemented();
+}
+
+void KinectDaemon::update(Observable *_observable, std::shared_ptr<Event> _event) {
+    throw NotImplemented();
+}
+
+void KinectDaemon::update(std::shared_ptr<Observable> _observable, std::shared_ptr<Event> _event) {
+    std::cout << "[START] void KinectDaemon::update(std::shared_ptr<Observable> _observable, std::shared_ptr<Event> _event)" << std::endl;
+    /*std::lock_guard<std::mutex> _lock{*this->thread_mutex.get()};
+    for(auto id : finished_threads){
+        auto thread = this->running_threads.find(id);
+        thread->second->join();
+        this->finished_threads.erase(std::remove(this->finished_threads.begin(), this->finished_threads.end(), id), this->finished_threads.end());
+    }*/
+    std::cout << "[END] void KinectDaemon::update(std::shared_ptr<Observable> _observable, std::shared_ptr<Event> _event)" << std::endl;
+}
+
+void KinectDaemon::update(std::shared_ptr<Observable> _observable) {
+    throw NotImplemented();
+}
+
 std::shared_ptr<PlayCommand> KinectDaemon::play(const std::string &_filename)
 {
 	std::shared_ptr<PlayCommand> _play = std::make_shared<PlayCommand>();
     _play->filename(_filename);
+    _play->server_address("127.0.0.1");
 	this->execute(ZMQMessageType::PLAY, _play);
+	/*_play->attach(shared_from_this());
+	
+    std::shared_ptr<std::thread> _thr = std::make_shared<std::thread>(&PlayCommand::execute,_play,std::make_shared<ThreadEvent>("tcp://141.54.147.108:7000"));
+
+    this->running_threads.insert(std::make_pair(this->unique_thread_id,_thr));
+    ++this->unique_thread_id;*/
 	return _play;
 }
+
+std::shared_ptr<RecordCommand> KinectDaemon::record()
+{
+	std::shared_ptr<RecordCommand> _record = std::make_shared<RecordCommand>();
+    _record->filename("/home/mejo6715/Hiwi/kinect_recordings/rgbdri_rec_2.stream");
+    _record->server_address("141.54.147.106:7000");
+    _record->num_kinect_cameras(4);
+	this->execute(ZMQMessageType::RECORD, _record);
+
+	/*_record->attach(shared_from_this());
+	
+    std::shared_ptr<std::thread> _thr = std::make_shared<std::thread>(&RecordCommand::execute,_record,std::make_shared<ThreadEvent>("tcp://141.54.147.108:7000"));
+
+    this->running_threads.insert(std::make_pair(this->unique_thread_id,_thr));
+    ++this->unique_thread_id;*/
+	return _record;
+}
+
 /*
 void KinectDaemon::open_cmd_backchannel(std::shared_ptr<Event> _event, unsigned _unique_thread_id)
 {
@@ -93,22 +133,16 @@ void KinectDaemon::open_cmd_backchannel(std::shared_ptr<Event> _event, unsigned 
 */
 void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd)
 {
-	//std::shared_ptr<PlayCommand> _exe(std::dynamic_pointer_cast<PlayCommand>(_cmd));
-	PlayCommand _exe;
-	_exe.filename("test");
-	_exe.server_address("127.0.0.1");
-
 	zmq::context_t _ctx(1);
 	zmq::socket_t _skt(_ctx, ZMQ_PUB);
 	uint32_t hwm = 10000;
   	_skt.setsockopt(ZMQ_SNDHWM,&hwm, sizeof(hwm));
 	std::cout << this->kinect_daemon_com_port.substr(this->kinect_daemon_com_port.find(":")+1,this->kinect_daemon_com_port.length()) << std::endl;
 	_skt.bind("tcp://0.0.0.0:"+this->kinect_daemon_com_port.substr(this->kinect_daemon_com_port.find(":")+1,this->kinect_daemon_com_port.length()));
-
 	sleep(1);
-	GenericMessage msg;
-
+    GenericMessage msg;
+	msg.set_type(_type);
 	msg.set_payload(_cmd);
 	_skt.send(msg.build_zmq_message());
-	//this->start_thread(std::bind(&KinectDaemon::open_cmd_backchannel,this,this->unique_thread_id), <#std::shared_ptr<Event> _event#>)
+	
 }

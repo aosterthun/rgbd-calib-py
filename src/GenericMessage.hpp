@@ -2,6 +2,7 @@
 #define GenericMessage_hpp
 
 #include <PlayCommand.hpp>
+#include <RecordCommand.hpp>
 #include <iostream>
 #include <memory>
 #include <thread>

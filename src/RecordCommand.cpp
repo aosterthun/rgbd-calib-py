@@ -1,40 +1,40 @@
 //
-//  PlayCommand.cpp
+//  RecordCommand.cpp
 //  ZMQ
 //
 //  Created by Arne Osterthun on 21.08.17.
 //  Copyright © 2017 Arne Osterthun. All rights reserved.
 //
 
-#include "PlayCommand.hpp"
+#include "RecordCommand.hpp"
 
-PlayCommand::PlayCommand()
+RecordCommand::RecordCommand()
 {
 	this->zmq_context = std::make_shared<zmq::context_t>(1);
 	this->zmq_pub_socket = std::make_shared<zmq::socket_t>(*this->zmq_context,ZMQ_PUB);
 	this->zmq_sub_socket = std::make_shared<zmq::socket_t>(*this->zmq_context,ZMQ_SUB);
 	this->zmq_sub_socket->setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
+	this->is_running = true;
 	this->cmd_filename = "";
 	this->cmd_server_address = "";
     this->cmd_backchannel_com_port = "";
-	this->cmd_num_kinect_cameras = 0;
-	this->cmd_max_fps = 0;
-	this->cmd_rgb_is_compressed = false;
-	this->cmd_loop = false;
-	this->cmd_startframe = 0;
-	this->cmd_endframe = 0;
+	this->cmd_num_kinect_cameras = 4;
+	this->cmd_num_seconds_to_record = 0;
+	this->cmd_rgb_is_compressed = true;
+	this->cmd_wait_frames_to_before_start = 0;
 }
 
-void PlayCommand::listen_on_backchannel()
+void RecordCommand::listen_on_backchannel()
 {
+	std::cout << "[START] void RecordCommand::listen_on_backchannel()" << std::endl;
 	this->zmq_sub_socket->connect(this->get_backchannel_port(true)[0]+":"+std::to_string((std::stoi(this->get_backchannel_port(true)[1],nullptr) + 1)));
+	//std:: cout << this->get_backchannel_port(true)[0]+":"+std::to_string((std::stoi(this->get_backchannel_port(true)[1],nullptr) + 1)) << std::endl;
 	while (true) {
 		std::shared_ptr<zmq::message_t> _msg = std::make_shared<zmq::message_t>();
 		
 		if(this->zmq_sub_socket->recv(_msg.get()))
 		{
-			std::cout << "PlayCommand::listen_on_backchannel()" << std::endl;
 			CommandStatus _status;
 			auto _cmd_string = std::string(static_cast<char*>(_msg->data()), _msg->size());
 			
@@ -49,7 +49,12 @@ void PlayCommand::listen_on_backchannel()
 					std::cout << "[PAUSE]" << std::endl;
 					this->send_on_backchannel(CommandStatus::PAUSED);
 					break;
-				case STOPED:
+				case STOP:
+					std::cout << "[STOP]" << std::endl;
+					this->is_running = false;
+					this->send_on_backchannel(CommandStatus::STOPED);
+					break;
+				case STOPED:	
 					std::cout << "[STOPED]" << std::endl;
 					this->is_running = false;
 					break;
@@ -60,9 +65,9 @@ void PlayCommand::listen_on_backchannel()
 	}
 }
 
-void PlayCommand::send_on_backchannel(const int _status)
+void RecordCommand::send_on_backchannel(const int _status)
 {
-	std::cout << "PlayCommand::send_on_backchannel(const int _status)" << std::endl;
+	std::cout << "RecordCommand::send_on_backchannel(const int _status)" << std::endl;
 	this->zmq_pub_socket->bind("tcp://0.0.0.0:"+std::to_string((std::stoi(this->get_backchannel_port(true)[1],nullptr) + 1)));
 	std::cout <<  std::to_string((std::stoi(this->get_backchannel_port(true)[1],nullptr) + 1)) << std::endl;
 	std::cout << "connected" << std::endl;
@@ -81,116 +86,99 @@ void PlayCommand::send_on_backchannel(const int _status)
 	
 }
 
-std::vector<std::string> PlayCommand::get_backchannel_port(bool _seperated) {
-	std::cout << "[START] std::vector<std::string> PlayCommand::get_backchannel_port(bool _seperated)" << std::endl;
+std::vector<std::string> RecordCommand::get_backchannel_port(bool _seperated) {
+	//std::cout << "[START] std::vector<std::string> RecordCommand::get_backchannel_port(bool _seperated)" << std::endl;
 	this->cmd_backchannel_com_port = "tcp://141.54.147.108:8001";
-	std:: cout << "1" << std::endl;
+	//std:: cout << "1" << std::endl;
     std::vector<std::string> _port;
     if(_seperated){
-    	std:: cout << "2" << std::endl;
+    	//std:: cout << "2" << std::endl;
         size_t _first = this->cmd_backchannel_com_port.find(":");
         _port.push_back(this->cmd_backchannel_com_port.substr(0,this->cmd_backchannel_com_port.find(":",_first+1)));
         _port.push_back(this->cmd_backchannel_com_port.substr(this->cmd_backchannel_com_port.find(":",_first+1)+1,this->cmd_backchannel_com_port.length()));
-        std::cout <<  this->cmd_backchannel_com_port.substr(0,this->cmd_backchannel_com_port.find(":",_first+1)) << std::endl;
-        std::cout <<  this->cmd_backchannel_com_port.substr(this->cmd_backchannel_com_port.find(":",_first+1)+1,this->cmd_backchannel_com_port.length()) << std::endl;
+        //std::cout <<  this->cmd_backchannel_com_port.substr(0,this->cmd_backchannel_com_port.find(":",_first+1)) << std::endl;
+        //std::cout <<  this->cmd_backchannel_com_port.substr(this->cmd_backchannel_com_port.find(":",_first+1)+1,this->cmd_backchannel_com_port.length()) << std::endl;
     }else{
-    	std:: cout << "3" << std::endl;
+    	//std:: cout << "3" << std::endl;
         _port.push_back(this->cmd_backchannel_com_port);
     }
-    std::cout << "[END] std::vector<std::string> PlayCommand::get_backchannel_port(bool _seperated)" << std::endl;
+    //std::cout << "[END] std::vector<std::string> RecordCommand::get_backchannel_port(bool _seperated)" << std::endl;
     return _port;
 }
 
-void PlayCommand::set_backchannel_com_port(std::string const &_com_port) {
+void RecordCommand::set_backchannel_com_port(std::string const &_com_port) {
     this->cmd_backchannel_com_port = _com_port;
 }
 
-void PlayCommand::execute(std::shared_ptr<Event> _event)
+void RecordCommand::execute(std::shared_ptr<Event> _event)
 {
+	std::cout << "[START] void RecordCommand::execute(std::shared_ptr<Event> _event)" << std::endl;
+
     std::shared_ptr<ThreadEvent> _thread_event = std::static_pointer_cast<ThreadEvent>(_event);
     this->set_backchannel_com_port(_thread_event->get_data());
-	std::shared_ptr<std::thread> _backchannel_listen_thread = std::make_shared<std::thread>(&PlayCommand::listen_on_backchannel,this);
-	this->send_on_backchannel(CommandStatus::STARTED);
-    std::cout << "PlayCommand::execute()" << std::endl;
-		
+	std::shared_ptr<std::thread> _backchannel_listen_thread = std::make_shared<std::thread>(&RecordCommand::listen_on_backchannel,this);
+	this->is_running = true;
 	while(this->is_running){
 
 	}
-
-	_backchannel_listen_thread->join();
-	//this->notify();
+   	_backchannel_listen_thread->join();
+   	//this->notify(std::make_shared<ThreadEvent>());
+	std::cout << "[END] void RecordCommand::execute(std::shared_ptr<Event> _event)" << std::endl;
 }
 
-void PlayCommand::stop(){
+void RecordCommand::stop(){
 	this->send_on_backchannel(CommandStatus::STOP);
 }
 
-ZMQMessageType PlayCommand::get_type() {
+ZMQMessageType RecordCommand::get_type() {
 	return ZMQMessageType::PLAY;
 }
 
-void PlayCommand::filename(std::string const& _filename)
+void RecordCommand::filename(std::string const& _filename)
 {
 	this->cmd_filename = _filename;
 }
-std::string PlayCommand::filename() const
+std::string RecordCommand::filename() const
 {
 	return this->cmd_filename;
 }
-void PlayCommand::server_address(std::string const& _server_address)
+void RecordCommand::server_address(std::string const& _server_address)
 {
 	this->cmd_server_address = _server_address;
 }
-std::string PlayCommand::server_address() const
+std::string RecordCommand::server_address() const
 {
 	return this->cmd_server_address;
 }
-void PlayCommand::num_kinect_cameras(unsigned _num_kinect_cameras)
+void RecordCommand::num_kinect_cameras(unsigned _num_kinect_cameras)
 {
 	this->cmd_num_kinect_cameras = _num_kinect_cameras;
 }
-unsigned PlayCommand::num_kinect_cameras() const
+unsigned RecordCommand::num_kinect_cameras() const
 {
 	return this->cmd_num_kinect_cameras;
 }
-void PlayCommand::max_fps(unsigned _max_fps)
+void RecordCommand::num_seconds_to_record(unsigned _num_seconds_to_record)
 {
-	this->cmd_max_fps = _max_fps;
+	this->cmd_num_seconds_to_record = _num_seconds_to_record;
 }
-unsigned PlayCommand::max_fps() const
+unsigned RecordCommand::num_seconds_to_record() const
 {
-	return this->cmd_max_fps;
+	return this->cmd_num_seconds_to_record;
 }
-void PlayCommand::rgb_is_compressed(bool _rgb_is_compressed)
+void RecordCommand::rgb_is_compressed(bool _rgb_is_compressed)
 {
 	this->cmd_rgb_is_compressed = _rgb_is_compressed;
 }
-bool PlayCommand::rgb_is_compressed() const
+bool RecordCommand::rgb_is_compressed() const
 {
 	return this->cmd_rgb_is_compressed;
 }
-void PlayCommand::loop(bool _loop)
+void RecordCommand::wait_frames_to_before_start(unsigned _wait_frames_to_before_start)
 {
-	this->cmd_loop = _loop;
+	this->cmd_wait_frames_to_before_start = _wait_frames_to_before_start;
 }
-bool PlayCommand::loop() const
+unsigned RecordCommand::wait_frames_to_before_start() const
 {
-	return this->cmd_loop;
+	return this->cmd_wait_frames_to_before_start;
 }
-void PlayCommand::startframe(int _startframe)
-{
-	this->cmd_startframe = _startframe;
-}
-int PlayCommand::startframe() const
-{
-	return this->cmd_startframe;
-}
-void PlayCommand::endframe(int _endframe)
-{
-	this->cmd_endframe = _endframe;
-}
-int PlayCommand::endframe() const
-{
-	return this->cmd_endframe;
-}
-

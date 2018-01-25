@@ -16,19 +16,34 @@ unsigned GenericMessage::get_message_size(){
 }
 
 void GenericMessage::set_payload(std::shared_ptr<AbstractCommand> _cmd){
-	std::shared_ptr<PlayCommand> _exe(std::dynamic_pointer_cast<PlayCommand>(_cmd));
+	switch(this->type)
+    {
+        case PLAY:{
+        	std::shared_ptr<PlayCommand> _exe(std::dynamic_pointer_cast<PlayCommand>(_cmd));
+    		std::stringstream _exe_stream;
+		    boost::archive::text_oarchive _exe_archive{_exe_stream};
+		    _exe_archive << *_exe;
+			this->payload = _exe_stream.str();        
+            break;
+        }
+        case RECORD:{
+            std::shared_ptr<RecordCommand> _exe(std::dynamic_pointer_cast<RecordCommand>(_cmd));
+            std::stringstream _exe_stream;
+		    boost::archive::text_oarchive _exe_archive{_exe_stream};
+		    _exe_archive << *_exe;
+			this->payload = _exe_stream.str();
+            break;
+        }
+        default:{
+            std::cout << "default" << std::endl;
+            break;
+        }
+    }
 
-	std::stringstream _exe_stream;
-
-    boost::archive::text_oarchive _exe_archive{_exe_stream};
-    _exe_archive << *_exe;
-	this->payload = _exe_stream.str();
-	std::cout << this->payload << std::endl;
+    std::cout << this->payload << std::endl;
 }
 
 zmq::message_t GenericMessage::build_zmq_message(){\
-	this->set_type(ZMQMessageType::PLAY);
-
 	this->set_payload_size(this->payload.size() + 1);
 
 	zmq::message_t _exe_msg{this->get_message_size()};
