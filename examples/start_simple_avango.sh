@@ -1,3 +1,7 @@
+#!/bin/bash
+
+
+
 # if not, this path will be used
 GUACAMOLE=/opt/guacamole/master
 AVANGO=/opt/avango/master
@@ -13,4 +17,4 @@ export LD_LIBRARY_PATH=/opt/Awesomium/lib:/opt/lamure/install/lib
 export LD_LIBRARY_PATH=$AVANGO/lib:$GUACAMOLE/lib:$LD_LIBRARY_PATH
 export PYTHONPATH=$PYTHONPATH:../lib:$AVANGO/lib/python3.5:$AVANGO/examples
 
-python3.5 ./main.py "$@"
+python3.5 ./simple_avango.py "$@"
