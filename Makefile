@@ -1,8 +1,8 @@
 CC = c++
-PYLIBPATH = /usr/lib/x86_64-linux-gnu
-PYINCPATH = /usr/include/python3.5
-LIBS = -L$(PYLIBPATH) -lpthread -ldl  -lutil -lm  -lpython3.5m -lboost_python-py35 -lboost_serialization -lboost_system -lzmq
-CXXFLAGS = -std=c++11 -Isrc -I$(PYINCPATH) -O2 
+PYLIBPATH = /usr/local/Cellar/python3/3.6.4_2/Frameworks/Python.framework/Versions/3.6/lib/
+PYINCPATH = /usr/local/Cellar/python3/3.6.4_2/Frameworks/Python.framework/Versions/3.6/include/python3.6m
+LIBS = -L$(PYLIBPATH) -lpthread -ldl  -lutil -lm  -lpython3.6m -lboost_python3 -lboost_serialization -lboost_system -lzmq
+CXXFLAGS = -std=c++11 -stdlib=libc++ -Isrc -I$(PYINCPATH) -O2
 
 
 SOURCES = $(wildcard src/*.cpp)
@@ -27,4 +27,3 @@ clean:
 
 
 .PHONY: default clean
-

@@ -13,4 +13,4 @@ export LD_LIBRARY_PATH=/opt/Awesomium/lib:/opt/lamure/install/lib
 export LD_LIBRARY_PATH=$AVANGO/lib:$GUACAMOLE/lib:$LD_LIBRARY_PATH
 export PYTHONPATH=$PYTHONPATH:../lib:$AVANGO/lib/python3.5:$AVANGO/examples
 
-python3.5 ./main.py "$@"
+python3.6 ./main.py "$@"

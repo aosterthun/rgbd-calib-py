@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <memory>
+#include <string>
 #include <Event.hpp>
 #include <EventData.hpp>
 
