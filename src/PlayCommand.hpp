@@ -43,7 +43,7 @@ private:
 	int cmd_endframe;
 	bool is_running;
 
-	
+
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
@@ -55,6 +55,7 @@ private:
 		ar & cmd_loop;
 		ar & cmd_startframe;
 		ar & cmd_endframe;
+		ar & cmd_backchannel_com_port;
 	}
 public:
 	PlayCommand();

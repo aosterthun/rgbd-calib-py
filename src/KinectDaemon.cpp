@@ -14,11 +14,14 @@ KinectDaemon::KinectDaemon(std::string const& _server_port, std::string const& _
 	this->ctx = std::make_shared<zmq::context_t>(1);
 	this->pub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_PUB);
 	this->sub_skt = std::make_shared<zmq::socket_t>(*this->ctx.get(), ZMQ_SUB);
-	
+
 	this->pub_skt->connect("tcp://" + _server_port + ":8000");
 	this->sub_skt->bind("tcp://*:8000");
-    this->sub_skt->setsockopt(ZMQ_SUBSCRIBE, "", 0);
+  this->sub_skt->setsockopt(ZMQ_SUBSCRIBE, "", 0);
 	this->sub_skt->setsockopt(ZMQ_RCVTIMEO, &this->recv_timeo, sizeof(this->recv_timeo));
+
+	this->client_ip = _client_port;
+	this->server_ip = _server_port;
 
     sleep(1);
 
@@ -96,32 +99,47 @@ void KinectDaemon::update(std::shared_ptr<Observable> _observable) {
 std::shared_ptr<PlayCommand> KinectDaemon::play(const std::string &_filename)
 {
 	std::shared_ptr<PlayCommand> _play = std::make_shared<PlayCommand>();
-    _play->filename(_filename);
-    _play->server_address("127.0.0.1");
+  _play->filename(_filename);
+  _play->server_address("127.0.0.1");
+	_play->set_backchannel_com_port("tcp://" + this->client_ip + ":8001");
 	this->execute(ZMQMessageType::PLAY, _play);
-	/*_play->attach(shared_from_this());
-	
-    std::shared_ptr<std::thread> _thr = std::make_shared<std::thread>(&PlayCommand::execute,_play,std::make_shared<ThreadEvent>("tcp://141.54.147.108:7000"));
+	_play->set_backchannel_com_port("tcp://" + this->server_ip + ":8001");
+	return _play;
+}
 
-    this->running_threads.insert(std::make_pair(this->unique_thread_id,_thr));
-    ++this->unique_thread_id;*/
+std::shared_ptr<PlayCommand> KinectDaemon::play(const std::string &_filename, std::string const& _socket,unsigned _num_kinect_cameras)
+{
+	std::shared_ptr<PlayCommand> _play = std::make_shared<PlayCommand>();
+  _play->filename(_filename);
+  _play->server_address(_socket);
+	_play->num_kinect_cameras(_num_kinect_cameras);
+	_play->set_backchannel_com_port("tcp://" + this->client_ip + ":8001");
+	this->execute(ZMQMessageType::PLAY, _play);
+	_play->set_backchannel_com_port("tcp://" + this->server_ip + ":8001");
 	return _play;
 }
 
 std::shared_ptr<RecordCommand> KinectDaemon::record()
 {
 	std::shared_ptr<RecordCommand> _record = std::make_shared<RecordCommand>();
-    _record->filename("/home/mejo6715/Hiwi/kinect_recordings/rgbdri_rec_2.stream");
-    _record->server_address("141.54.147.106:7000");
-    _record->num_kinect_cameras(4);
+  _record->filename("/home/mejo6715/Hiwi/kinect_recordings/rgbdri_rec_2.stream");
+  _record->server_address("141.54.147.106:7000");
+  _record->num_kinect_cameras(4);
+	_record->set_backchannel_com_port("tcp://" + this->client_ip + ":8001");
 	this->execute(ZMQMessageType::RECORD, _record);
+	_record->set_backchannel_com_port("tcp://" + this->server_ip + ":8001");
+	return _record;
+}
 
-	/*_record->attach(shared_from_this());
-	
-    std::shared_ptr<std::thread> _thr = std::make_shared<std::thread>(&RecordCommand::execute,_record,std::make_shared<ThreadEvent>("tcp://141.54.147.108:7000"));
+std::shared_ptr<RecordCommand> KinectDaemon::record(std::string const& _filename, std::string const& _socket, unsigned _num_rgbd_sensors){
+	std::shared_ptr<RecordCommand> _record = std::make_shared<RecordCommand>();
+  _record->filename(_filename);
+  _record->server_address(_socket);
+	_record->set_backchannel_com_port("tcp://" + this->client_ip + ":8001");
+  _record->num_kinect_cameras(_num_rgbd_sensors);
 
-    this->running_threads.insert(std::make_pair(this->unique_thread_id,_thr));
-    ++this->unique_thread_id;*/
+	this->execute(ZMQMessageType::RECORD, _record);
+	_record->set_backchannel_com_port("tcp://" + this->server_ip + ":8001");
 	return _record;
 }
 
@@ -144,5 +162,5 @@ void KinectDaemon::execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand
 	msg.set_type(_type);
 	msg.set_payload(_cmd);
 	_skt.send(msg.build_zmq_message());
-	
+
 }

@@ -41,7 +41,7 @@ private:
 	unsigned cmd_wait_frames_to_before_start;
 	bool is_running;
 
-	
+
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version){
@@ -51,6 +51,7 @@ private:
 		ar & cmd_num_seconds_to_record;
 		ar & cmd_rgb_is_compressed;
 		ar & cmd_wait_frames_to_before_start;
+		ar & cmd_backchannel_com_port;
 	}
 public:
 	RecordCommand();

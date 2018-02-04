@@ -32,19 +32,23 @@ private:
 	std::shared_ptr<zmq::context_t> ctx;
 	std::shared_ptr<zmq::socket_t> pub_skt;
 	std::shared_ptr<zmq::socket_t> sub_skt;
+	std::string client_ip;
+	std::string server_ip;
 	int recv_timeo;
 	std::string kinect_daemon_com_port;
 	std::map<unsigned, std::shared_ptr<std::thread>> running_threads;
     std::vector<unsigned> finished_threads;
     unsigned unique_thread_id;
     std::shared_ptr<std::mutex> thread_mutex;
-	
+
 public:
 	KinectDaemon(std::string const& _server_port, std::string const& _client_port);
 //	std::shared_ptr<PlayCommand> play();
 	std::shared_ptr<PlayCommand> play(std::string const& _filename);
+	std::shared_ptr<PlayCommand> play(std::string const& _filename, std::string const& _socket,unsigned _num_kinect_cameras) ;
 //	std::shared_ptr<PlayCommand> play(std::string const& _filename,unsigned _num_kinect_cameras = 4);
 	std::shared_ptr<RecordCommand> record();
+	std::shared_ptr<RecordCommand> record(std::string const& _filename, std::string const& _socket, unsigned _num_rgbd_sensors);
 	void execute(ZMQMessageType _type, std::shared_ptr<AbstractCommand> _cmd);
 //	void open_cmd_backchannel(std::shared_ptr<Event> _event);
 	void update(std::shared_ptr<Observable> _observable);
