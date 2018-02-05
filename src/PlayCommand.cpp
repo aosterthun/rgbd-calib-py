@@ -18,10 +18,10 @@ PlayCommand::PlayCommand()
 	this->cmd_filename = "";
 	this->cmd_server_address = "";
   this->cmd_backchannel_com_port = "";
-	this->cmd_num_kinect_cameras = 0;
-	this->cmd_max_fps = 0;
-	this->cmd_rgb_is_compressed = false;
-	this->cmd_loop = false;
+	this->cmd_num_kinect_cameras = 4;
+	this->cmd_max_fps = 20;
+	this->cmd_rgb_is_compressed = true;
+	this->cmd_loop = true;
 	this->cmd_startframe = 0;
 	this->cmd_endframe = 0;
 }
