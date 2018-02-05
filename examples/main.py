@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     time.sleep(5)
 
-    play_recording = daemon.play(recording.filename(),"141.54.147.108:7000")
+    play_recording = daemon.play(recording.filename(),"141.54.147.108:7000",4)
 
 
     while True:

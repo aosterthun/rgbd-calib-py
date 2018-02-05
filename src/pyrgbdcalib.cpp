@@ -44,7 +44,7 @@ BOOST_PYTHON_MODULE(pyrgbdcalib) {
     class_<KinectDaemon>("KinectDaemon",
         init<std::string const&, std::string const&>())
       .def("play", static_cast<std::shared_ptr<PlayCommand> (KinectDaemon::*)(std::string const&)>(&KinectDaemon::play))
-      .def("play", static_cast<std::shared_ptr<PlayCommand> (KinectDaemon::*)(std::string const&,std::string const&)>(&KinectDaemon::play))
+      .def("play", static_cast<std::shared_ptr<PlayCommand> (KinectDaemon::*)(std::string const&,std::string const&, unsigned)>(&KinectDaemon::play))
       .def("record", static_cast<std::shared_ptr<RecordCommand> (KinectDaemon::*)()>(&KinectDaemon::record))
       .def("record", static_cast<std::shared_ptr<RecordCommand> (KinectDaemon::*)(std::string const&, std::string const&, unsigned)>(&KinectDaemon::record));
 
