@@ -10,7 +10,7 @@
 
 Observable::Observable()
 {
-    std::cout << "Init Observable" << std::endl;
+    //std::cout << "Init Observable" << std::endl;
 }
 
 void Observable::attach(std::shared_ptr<AbstractObserver> observer)
@@ -33,7 +33,7 @@ void Observable::notify()
 		{
 			observer->update(this);
 		}
-		
+
     }
 }
 

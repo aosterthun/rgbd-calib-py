@@ -10,7 +10,7 @@
 
 KinectDaemonHandshake::KinectDaemonHandshake()
 {
-	std::cout << "[Init] KinectDaemonHandshake" << std::endl;
+	//std::cout << "[Init] KinectDaemonHandshake" << std::endl;
 }
 
 void KinectDaemonHandshake::client_ip(std::string _client_ip)

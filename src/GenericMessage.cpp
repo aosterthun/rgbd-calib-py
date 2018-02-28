@@ -23,7 +23,7 @@ void GenericMessage::set_payload(std::shared_ptr<AbstractCommand> _cmd){
     		std::stringstream _exe_stream;
 		    boost::archive::text_oarchive _exe_archive{_exe_stream};
 		    _exe_archive << *_exe;
-			this->payload = _exe_stream.str();        
+			this->payload = _exe_stream.str();
             break;
         }
         case RECORD:{
@@ -35,12 +35,12 @@ void GenericMessage::set_payload(std::shared_ptr<AbstractCommand> _cmd){
             break;
         }
         default:{
-            std::cout << "default" << std::endl;
+            //std::cout << "default" << std::endl;
             break;
         }
     }
 
-    std::cout << this->payload << std::endl;
+    //std::cout << this->payload << std::endl;
 }
 
 zmq::message_t GenericMessage::build_zmq_message(){\
