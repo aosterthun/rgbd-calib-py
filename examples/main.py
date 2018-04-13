@@ -3,18 +3,23 @@ import time
 import pyrgbdcalib
 
 if __name__ == '__main__':
-    daemon = pyrgbdcalib.KinectDaemon("141.54.147.101","141.54.147.108")
-    recording = daemon.record("/tmp/test_rec.stream","141.54.147.101:7000",4)
-    time.sleep(5)
-    recording.stop()
+    rgbd = pyrgbdcalib.RGBDRIClient("127.0.0.1","127.0.0.1")
+    live = pyrgbdcalib.Play(rgbd,"/opt/kinect-resources/rgbd-framework/rgbd-daemon/kinect_recordings/user_andre.stream", "127.0.0.1:9000")
+    live.start()
 
-    time.sleep(5)
-
-    play_recording = daemon.play(recording.filename(),"141.54.147.101:7001",4)
-
-    time.sleep(20)
-
-    play_recording.stop()
-
-    time.sleep(1)
-
+    while True:
+        pass
+    # while(True):
+    #     record = pyrgbdcalib.Record(rgbd,"/tmp/record.stream", live.stream_endpoint)
+    #     record.start()
+    #     time.sleep(10)
+    #     record.stop()
+    #
+    #     play = pyrgbdcalib.Play(rgbd,record.filename, "127.0.0.1:9002")
+    #     play.start()
+    #     time.sleep(10)
+    #     play.pause()
+    #     time.sleep(10)
+    #     play.resume()
+    #     time.sleep(10)
+    #     play.stop()

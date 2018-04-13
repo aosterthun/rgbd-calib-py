@@ -2,11 +2,9 @@
  * This inclusion should be put at the beginning.  It will include <Python.h>.
  */
 
-
-#include <KinectDaemon.hpp>
-#include <AbstractCommand.hpp>
-#include <PlayCommand.hpp>
-#include <RecordCommand.hpp>
+#include <RGBDRIClient.hpp>
+#include <play.hpp>
+#include <record.hpp>
 
 #include <boost/python.hpp>
 #include <cstdint>
@@ -16,7 +14,6 @@
 #include <boost/utility.hpp>
 #include <boost/shared_ptr.hpp>
 
-
 /*
  * This is a macro Boost.Python provides to signify a Python extension module.
  */
@@ -24,30 +21,27 @@ BOOST_PYTHON_MODULE(pyrgbdcalib) {
     // An established convention for using boost.python.
     using namespace boost::python;
 
-    class_<AbstractCommand, boost::noncopyable>("AbstractCommand",
-        no_init)
-    	.def("get_type", pure_virtual(&AbstractCommand::get_type))
-    	.def("execute", pure_virtual(&AbstractCommand::execute));
+    class_<RGBDRIClient>("RGBDRIClient",
+       init<std::string const&, std::string const&>());
 
-    class_<PlayCommand, bases<AbstractCommand>>("PlayCommand",
-        init<>())
-      .def("stop", &PlayCommand::stop);
+    class_<Record>("Record",
+        init<RGBDRIClient&, std::string const&, std::string const&>())
+      .def("start", &Record::start)
+      .def("stop", &Record::stop)
+      .def_readwrite("filename", &Record::filename)
+      .def_readwrite("stream_endpoint", &Record::stream_endpoint)
+      .def_readwrite("backchannel_endpoint", &Record::backchannel_endpoint);
 
-    class_<RecordCommand, bases<AbstractCommand>>("RecordCommand",
-        init<>())
-      .def("stop", &RecordCommand::stop)
-      .def("filename", static_cast<std::string (RecordCommand::*)() const>(&RecordCommand::filename))
-      .def("filename", static_cast<void (RecordCommand::*)(std::string const&)>(&RecordCommand::filename))
-      .def("server_address", static_cast<std::string (RecordCommand::*)() const>(&RecordCommand::server_address))
-      .def("server_address", static_cast<void (RecordCommand::*)(std::string const&)>(&RecordCommand::server_address));
+    class_<Play>("Play",init<RGBDRIClient&, std::string const&, std::string const&>())
+      .def(init<RGBDRIClient&, std::string const&, std::string const&, std::string const&>())
+      .def("start", &Play::start)
+      .def("loop", &Play::play_as_loop)
+      .def("pause", &Play::pause)
+      .def("resume", &Play::resume)
+      .def("stop", &Play::stop)
+      .def_readwrite("filename", &Play::filename)
+      .def_readwrite("stream_endpoint", &Play::stream_endpoint)
+      .def_readwrite("backchannel_endpoint", &Play::backchannel_endpoint);
 
-    class_<KinectDaemon>("KinectDaemon",
-        init<std::string const&, std::string const&>())
-      .def("play", static_cast<std::shared_ptr<PlayCommand> (KinectDaemon::*)(std::string const&)>(&KinectDaemon::play))
-      .def("play", static_cast<std::shared_ptr<PlayCommand> (KinectDaemon::*)(std::string const&,std::string const&, unsigned)>(&KinectDaemon::play))
-      .def("record", static_cast<std::shared_ptr<RecordCommand> (KinectDaemon::*)()>(&KinectDaemon::record))
-      .def("record", static_cast<std::shared_ptr<RecordCommand> (KinectDaemon::*)(std::string const&, std::string const&, unsigned)>(&KinectDaemon::record));
 
-    register_ptr_to_python<std::shared_ptr<RecordCommand>>();
-    register_ptr_to_python<std::shared_ptr<PlayCommand>>();
 }

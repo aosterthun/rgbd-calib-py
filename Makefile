@@ -14,7 +14,7 @@ TARGET = lib/pyrgbdcalib.so
 default: $(TARGET)
 	@echo built $(TARGET)
 	c++ -std=c++11 -c examples/kinect_client.cpp -o examples/kinect_client.o -Isrc
-	c++ -std=c++11 examples/kinect_client.o src/Event.o src/KinectDaemon.o src/KinectDaemonHandshake.o src/Observable.o src/PlayCommand.o src/Threadable.o src/ZMQMessageType.o src/ThreadEvent.o src/EventData.o src/GenericMessage.o src/RecordCommand.o -o examples/kinect_client -lboost_system -lboost_serialization -lzmq -pthread
+	c++ -std=c++11 examples/kinect_client.o src/play.o src/record.o src/RGBDRIClient.o src/FileBuffer.o src/ChronoMeter.o src/GenericMessage.o -o examples/kinect_client -lboost_system -lboost_serialization -lzmq -pthread
 
 $(TARGET): $(OBJECTS) Makefile
 	$(CC) -shared $(OBJECTS) $(LIBS) -Wl,-rpath,$(PYLIBPATH) -o $@
