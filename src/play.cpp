@@ -291,11 +291,22 @@ void Play::start(){
     }
   }
 };
+bool Play::is_playing(){
+  init_req();
+  skt->connect("tcp://" + backchannel_endpoint);
+  m_logger->debug(backchannel_endpoint);
+  ssend(*skt.get(),"IS_RUNNING");
+  auto rep = srecv(*skt.get());
 
+  skt->disconnect("tcp://" + backchannel_endpoint);
+
+  return to_bool(rep.front());
+};
 void Play::play_as_loop(){
   loop = true;
   start();
-}
+  loop = false;
+};
 
 void Play::stop(){
   init_req();

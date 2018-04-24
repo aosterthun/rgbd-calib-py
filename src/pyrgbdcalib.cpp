@@ -39,6 +39,7 @@ BOOST_PYTHON_MODULE(pyrgbdcalib) {
       .def("pause", &Play::pause)
       .def("resume", &Play::resume)
       .def("stop", &Play::stop)
+      .def("is_playing", &Play::is_playing)
       .def_readwrite("filename", &Play::filename)
       .def_readwrite("stream_endpoint", &Play::stream_endpoint)
       .def_readwrite("backchannel_endpoint", &Play::backchannel_endpoint);
